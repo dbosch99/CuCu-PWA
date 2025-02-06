@@ -1,3 +1,0 @@
-1. index.html → Contiene la struttura della pagina web.
-2. styles.css → Definisce l'aspetto grafico.
-3. script.js → Contiene la logica per il caricamento del file ZIP e l'analisi dei dati.
