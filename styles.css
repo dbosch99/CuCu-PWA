@@ -84,3 +84,7 @@ ul li {
     display: flex;
     justify-content: space-between;
 }
+
+.user-content {
+    display: inline;
+}
