@@ -26,8 +26,20 @@ processBtn.addEventListener('click', async () => {
     if (file) {
         try {
             const zip = await JSZip.loadAsync(file);
-            const followersFile = zip.file("connections/followers_and_following/followers_1.html");
-            const followingFile = zip.file("connections/followers_and_following/following.html");
+            let followersFile = null;
+            let followingFile = null;
+            let pendingFile = null;
+
+            zip.forEach((relativePath, file) => {
+                const lowerPath = relativePath.toLowerCase();
+                if (lowerPath.endsWith("followers_1.html") && !lowerPath.includes("__macosx") && !lowerPath.includes("._")) {
+                    followersFile = file;
+                } else if (lowerPath.endsWith("following.html") && !lowerPath.includes("__macosx") && !lowerPath.includes("._")) {
+                    followingFile = file;
+                } else if (lowerPath.endsWith("pending_follow_requests.html") && !lowerPath.includes("__macosx") && !lowerPath.includes("._")) {
+                    pendingFile = file;
+                }
+            });
 
             if (!followersFile || !followingFile) {
                 alert("Required files not found in the ZIP.");
@@ -36,12 +48,14 @@ processBtn.addEventListener('click', async () => {
 
             const followersContent = await followersFile.async("string");
             const followingContent = await followingFile.async("string");
+            const pendingContent = pendingFile ? await pendingFile.async("string") : null;
 
             followers = extractUsernames(followersContent);
             following = extractUsernames(followingContent);
+            const pending = pendingContent ? extractUsernames(pendingContent) : [];
 
             const notFollowingBack = following.filter(user => !followers.includes(user));
-            displayResults(notFollowingBack);
+            displayResults(notFollowingBack, pending);
         } catch (error) {
             alert("An error occurred while processing the file.");
         }
@@ -67,15 +81,27 @@ function extractUsernames(htmlContent) {
     return Array.from(links).map(link => link.href.split('/')[3]).filter(Boolean);
 }
 
-function displayResults(usernames) {
-    if (usernames.length === 0) {
+function displayResults(notFollowingBack, pending) {
+    const totalResults = notFollowingBack.length + pending.length;
+
+    if (totalResults === 0) {
         alert("No results to display.");
         return;
     }
 
     resultTitle.style.display = "block";
-    resultCount.textContent = usernames.length;
-    resultList.innerHTML = usernames
-        .map((user, index) => `<li>${user}<span>${index + 1}</span></li>`)
-        .join('');
+    resultCount.textContent = totalResults;
+    resultList.innerHTML = '';
+
+    pending.forEach((user, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<div class="user-content">${user} <b>(WAITING)</b></div><span>${index + 1}</span>`;
+        resultList.appendChild(li);
+    });
+
+    notFollowingBack.forEach((user, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<div class="user-content">${user}</div><span>${pending.length + index + 1}</span>`;
+        resultList.appendChild(li);
+    });
 }
