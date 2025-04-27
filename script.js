@@ -1,6 +1,5 @@
 const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
-const resetBtn = document.getElementById('resetBtn');
 const refreshBtn = document.getElementById('refreshBtn');
 const fileLabel = document.getElementById('fileLabel');
 const resultTitle = document.getElementById('resultTitle');
@@ -17,8 +16,6 @@ fileInput.addEventListener('change', () => {
         processBtn.classList.remove('sbiadito');
         fileLabel.textContent = "Uploaded";
         fileLabel.className = 'button gray';
-        resetBtn.className = 'button red';
-        resetBtn.classList.remove('sbiadito');
     }
 });
 
@@ -61,17 +58,6 @@ processBtn.addEventListener('click', async () => {
             alert("An error occurred while processing the file.");
         }
     }
-});
-
-resetBtn.addEventListener('click', () => {
-    fileInput.value = "";
-    processBtn.disabled = true;
-    processBtn.className = 'button gray-light sbiadito';
-    resetBtn.className = 'button gray-light sbiadito';
-    resultTitle.style.display = 'none';
-    resultList.innerHTML = '';
-    fileLabel.textContent = "Select ZIP file";
-    fileLabel.className = 'button gray';
 });
 
 refreshBtn.addEventListener('click', () => {
