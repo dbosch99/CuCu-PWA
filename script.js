@@ -11,15 +11,19 @@ let following = [];
 
 fileInput.addEventListener('change', () => {
     if (fileInput.files.length > 0) {
+        fileInput.disabled = true;
         processBtn.disabled = false;
         processBtn.className = 'button blue';
         processBtn.classList.remove('sbiadito');
         fileLabel.textContent = "Uploaded";
-        fileLabel.className = 'button gray';
+        fileLabel.className = 'button gray sbiadito';
     }
 });
 
 processBtn.addEventListener('click', async () => {
+    processBtn.disabled = true;
+    processBtn.className = 'button gray-light sbiadito';
+    
     const file = fileInput.files[0];
     if (file) {
         try {
