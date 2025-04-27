@@ -74,24 +74,14 @@ resetBtn.addEventListener('click', () => {
     fileLabel.className = 'button gray';
 });
 
-refreshBtn.addEventListener('click', () => {
-    if (navigator.serviceWorker) {
-        navigator.serviceWorker.getRegistration().then(registration => {
-            if (registration) {
-                registration.unregister().then(() => {
-                    caches.keys().then(names => {
-                        Promise.all(names.map(name => caches.delete(name))).then(() => {
-                            window.location.reload(true);
-                        });
-                    });
-                });
-            } else {
-                window.location.reload(true);
-            }
-        });
-    } else {
-        window.location.reload(true);
+refreshBtn.addEventListener('click', async () => {
+    if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+            await registration.update();
+        }
     }
+    window.location.reload();
 });
 
 function extractUsernames(htmlContent) {
