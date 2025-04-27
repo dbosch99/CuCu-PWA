@@ -75,13 +75,22 @@ resetBtn.addEventListener('click', () => {
 });
 
 refreshBtn.addEventListener('click', () => {
-    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration) {
+                registration.unregister().then(() => {
+                    caches.keys().then(names => {
+                        Promise.all(names.map(name => caches.delete(name))).then(() => {
+                            window.location.reload(true);
+                        });
+                    });
+                });
+            } else {
+                window.location.reload(true);
+            }
+        });
     } else {
-        window.location.reload();
+        window.location.reload(true);
     }
 });
 
