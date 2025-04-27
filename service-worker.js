@@ -1,4 +1,4 @@
-const CACHE_NAME = 'CuCu-PWA-v12';
+const CACHE_NAME = 'CuCu-PWA-' + new Date().toISOString();
 const urlsToCache = [
     './',
     './index.html',
