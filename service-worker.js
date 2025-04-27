@@ -1,4 +1,4 @@
-const CACHE_NAME = 'CuCu-PWA-v11';
+const CACHE_NAME = 'CuCu-PWA-v12';
 const urlsToCache = [
     './',
     './index.html',
@@ -10,6 +10,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
             return cache.addAll(urlsToCache);
@@ -27,6 +28,8 @@ self.addEventListener('activate', event => {
                     }
                 })
             );
+        }).then(() => {
+            return self.clients.claim();
         })
     );
 });
