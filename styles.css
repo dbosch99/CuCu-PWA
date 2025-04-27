@@ -31,13 +31,13 @@ p {
 }
 
 .button {
-    padding: 8px 18px;
+    padding: 6px 14px;
     font-size: 14px;
-    border-radius: 20px;
-    border: 1px solid transparent;
+    border-radius: 8px;
+    border: 0px solid transparent;
     cursor: pointer;
     display: inline-block;
-    margin: 10px 5px;
+    margin: 6px 4px;
     font-weight: bold;
 }
 
@@ -87,4 +87,9 @@ ul li {
 
 .user-content {
     display: inline;
+}
+
+.green {
+    background-color: #28a745;
+    color: #fff;
 }
