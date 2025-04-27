@@ -1,6 +1,8 @@
 const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
 const resetBtn = document.getElementById('resetBtn');
+const refreshBtn = document.getElementById('refreshBtn');
+const fileLabel = document.getElementById('fileLabel');
 const resultTitle = document.getElementById('resultTitle');
 const resultCount = document.getElementById('resultCount');
 const resultList = document.getElementById('resultList');
@@ -13,7 +15,6 @@ fileInput.addEventListener('change', () => {
         processBtn.disabled = false;
         processBtn.className = 'button blue';
         processBtn.classList.remove('sbiadito');
-        const fileLabel = document.querySelector("label[for='fileInput']");
         fileLabel.textContent = "Uploaded";
         fileLabel.className = 'button gray';
         resetBtn.className = 'button red';
@@ -69,9 +70,19 @@ resetBtn.addEventListener('click', () => {
     resetBtn.className = 'button gray-light sbiadito';
     resultTitle.style.display = 'none';
     resultList.innerHTML = '';
-    const fileLabel = document.querySelector("label[for='fileInput']");
     fileLabel.textContent = "Select ZIP file";
     fileLabel.className = 'button gray';
+});
+
+refreshBtn.addEventListener('click', () => {
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    } else {
+        window.location.reload();
+    }
 });
 
 function extractUsernames(htmlContent) {
