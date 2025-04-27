@@ -1,4 +1,4 @@
-const CACHE_NAME = 'CuCu-PWA-v7';
+const CACHE_NAME = 'CuCu-PWA-v8';
 const urlsToCache = [
     './',
     './index.html',
