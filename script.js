@@ -74,14 +74,31 @@ resetBtn.addEventListener('click', () => {
     fileLabel.className = 'button gray';
 });
 
-refreshBtn.addEventListener('click', async () => {
+refreshBtn.addEventListener('click', () => {
     if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.getRegistration();
-        if (registration) {
-            await registration.update();
-        }
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration) {
+                registration.unregister().then(() => {
+                    return caches.keys();
+                }).then(cacheNames => {
+                    return Promise.all(cacheNames.map(name => caches.delete(name)));
+                }).then(() => {
+                    console.log("Service Worker unregistered and cache cleared. Reloading...");
+                    window.location.reload(true);
+                }).catch(error => {
+                    console.error("Error during refresh:", error);
+                    window.location.reload(true);
+                });
+            } else {
+                window.location.reload(true);
+            }
+        }).catch(error => {
+            console.error("Error accessing Service Worker:", error);
+            window.location.reload(true);
+        });
+    } else {
+        window.location.reload(true);
     }
-    window.location.reload();
 });
 
 function extractUsernames(htmlContent) {
