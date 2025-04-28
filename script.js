@@ -65,6 +65,12 @@ processBtn.addEventListener('click', async () => {
 });
 
 refreshBtn.addEventListener('click', () => {
+    if (!navigator.onLine) {
+        console.log("Offline: faccio solo reset dell'app.");
+        window.location.reload(true);
+        return;
+    }
+
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistration().then(registration => {
             if (registration) {
