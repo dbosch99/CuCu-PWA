@@ -1,4 +1,4 @@
-import { unzipSync, strFromU8 } from 'https://cdn.jsdelivr.net/npm/fflate@0.8.1/esm/index.js';
+import { unzipSync, strFromU8 } from './fflate.js';
 
 const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
