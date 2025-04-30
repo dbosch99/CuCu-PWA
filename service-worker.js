@@ -3,7 +3,8 @@ const urlsToCache = [
     './',
     './index.html',
     './styles.css',
-    './script.js',
+    './fflate.js',
+    './fflate-logic.js',
     './manifest.json',
     './192.png',
     './512.png'
