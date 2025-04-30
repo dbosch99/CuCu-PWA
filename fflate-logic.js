@@ -13,11 +13,17 @@ let zipFile = null;
 fileInput.addEventListener('change', () => {
     if (fileInput.files.length > 0) {
         zipFile = fileInput.files[0];
+        console.log("✅ ZIP file selezionato:", zipFile.name);
+
         processBtn.disabled = false;
         processBtn.classList.remove('sbiadito');
-        processBtn.className = 'button blue';
+        processBtn.classList.remove('gray-light');
+        processBtn.classList.add('blue');
+
         fileLabel.textContent = "Uploaded";
-        fileLabel.className = 'button gray sbiadito';
+        fileLabel.classList.add('sbiadito');
+    } else {
+        console.warn("⚠️ Nessun file selezionato.");
     }
 });
 
