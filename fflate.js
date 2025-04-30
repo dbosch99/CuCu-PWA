@@ -1,15 +1,5 @@
 import { createRequire } from 'module';
 var require = createRequire('/');
-// DEFLATE is a complex format; to read this code, you should probably check the RFC first:
-// https://tools.ietf.org/html/rfc1951
-// You may also wish to take a look at the guide I made about this program:
-// https://gist.github.com/101arrowz/253f31eb5abc3d9275ab943003ffecad
-// Some of the following code is similar to that of UZIP.js:
-// https://github.com/photopea/UZIP.js
-// However, the vast majority of the codebase has diverged from UZIP.js to increase performance and reduce bundle size.
-// Sometimes 0 will appear where -1 would be more appropriate. This is because using a uint
-// is better for memory in most engines (I *think*).
-// Mediocre shim
 var Worker;
 var workerAdd = ";var __w=require('worker_threads');__w.parentPort.on('message',function(m){onmessage({data:m})}),postMessage=function(m,t){__w.parentPort.postMessage(m,t)},close=process.exit;self=global";
 try {
