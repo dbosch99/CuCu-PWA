@@ -1,51 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram CuCu</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram CuCu</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007bff">
 </head>
 <body>
-    <div class="container">
-        <h1>Instagram CuCu</h1>
-        <p>Upload your ZIP file</p>
+  <div class="container">
+    <h1>Instagram CuCu</h1>
+    <p>Upload your ZIP file</p>
 
-        <button id="refreshBtn" class="button green">Refresh 🔄</button>
-        <br>
-        <div class="button-group">
-            <label for="fileInput" class="button gray" id="fileLabel">Select ZIP file</label>
-            <input type="file" id="fileInput" accept=".zip" style="display: none;">
-            <button id="processBtn" class="button gray-light sbiadito">Run</button>
-        </div>
+    <!-- Pulsante refresh -->
+    <button id="refreshBtn" class="button button--success">Refresh 🔄</button>
 
-        <h2 id="resultTitle" style="display: none;">Not follow back: <span id="resultCount">0</span> profiles</h2>
-        <ul id="resultList"></ul>
+    <div class="button-group">
+      <!-- Input nascosto con label stile pulsante -->
+      <label for="fileInput" class="button button--gray" id="fileLabel">Select ZIP file</label>
+      <input type="file" id="fileInput" accept=".zip" style="display:none;">
+      
+      <!-- Inizialmente disabilitato -->
+      <button id="processBtn" class="button button--gray-light is-disabled" disabled>Run</button>
     </div>
 
-    <script src="jszip.min.js"></script>
-    <script src="script.js"></script>
-    <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js')
-        .then(registration => {
-            console.log('Service Worker registered with scope:', registration.scope);
+    <h2 id="resultTitle" style="display:none;">
+      Not follow back: <span id="resultCount">0</span> profiles
+    </h2>
+    <ul id="resultList"></ul>
+  </div>
 
-            registration.onupdatefound = () => {
-                const newWorker = registration.installing;
-                newWorker.onstatechange = () => {
-                    if (newWorker.state === 'activated') {
-                        console.log('New service worker activated. Reloading...');
-                        window.location.reload();
-                    }
-                };
-            };
-        })
-        .catch(error => {
-            console.log('Service Worker registration failed:', error);
-        });
-    }
-    </script>
+  <script src="jszip.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
