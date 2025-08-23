@@ -34,9 +34,7 @@
   }
 }
 
-html, body {
-  height: 100%;
-}
+html, body { height: 100%; }
 
 body{
   margin: 0;
@@ -59,25 +57,12 @@ body{
 }
 
 /* Typography */
-h1{
-  font-size: 24px;
-  margin: 0 0 10px;
-}
-h2{
-  font-size: 18px;
-  margin: 20px 0 10px;
-}
-p{
-  margin: 0 0 20px;
-  color: var(--muted);
-}
+h1{ font-size: 24px; margin: 0 0 10px; }
+h2{ font-size: 18px; margin: 20px 0 10px; }
+p { margin: 0 0 20px; color: var(--muted); }
 
 /* Lists */
-ul{
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+ul{ list-style: none; padding: 0; margin: 0; }
 ul li{
   background: #f0f0f0;
   margin: 5px 0;
@@ -120,12 +105,18 @@ ul li{
 .button--gray{    background: var(--gray); }
 .button--gray-light{ background: var(--gray-lt); }
 
-/* Stato disabled: usa attributo [disabled] invece di classe ad-hoc */
+/* Stato disabled */
 .button[disabled],
 .button.is-disabled{
   opacity: 0.5;
-  cursor: not-allowed;
   pointer-events: none;
+  cursor: default !important; /* niente “manina” */
+}
+
+/* Label disabilitata (es. "Uploaded") */
+label.button[aria-disabled="true"]{
+  pointer-events: none;
+  cursor: default !important; /* fix Safari */
 }
 
 /* Gruppo pulsanti */
