@@ -1,5 +1,5 @@
 // service-worker.js — aggiornamenti automatici senza bump
-const CACHE_NAME = 'cucu-pwa'; // fisso: non serve cambiarlo
+const CACHE_NAME = 'cucu-pwa';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -7,8 +7,8 @@ const PRECACHE_URLS = [
   './script.js',
   './jszip.min.js',
   './manifest.json',
-  './192.png',
-  './512.png'
+  './192x192.png',
+  './512x512.png'
 ];
 
 // Attiva subito appena installato (su richiesta dalla pagina)
