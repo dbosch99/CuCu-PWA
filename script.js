@@ -158,15 +158,27 @@ function displayResults(notFollowingBack, pending) {
   resultCount.textContent = totalResults;
   resultList.innerHTML = '';
 
+  const mkUrl = u => `https://www.instagram.com/${encodeURIComponent(u)}/`;
+
+  // Pending (WAITING) in cima
   pending.forEach((user, index) => {
     const li = document.createElement('li');
-    li.innerHTML = `<div class="user-content">${user} <b>(WAITING)</b></div><span>${index + 1}</span>`;
+    li.innerHTML = `
+      <div class="user-content">
+        <a href="${mkUrl(user)}" target="_blank" rel="noopener noreferrer">${user}</a> <b>(WAITING)</b>
+      </div>
+      <span>${index + 1}</span>`;
     resultList.appendChild(li);
   });
 
+  // Not following back
   notFollowingBack.forEach((user, index) => {
     const li = document.createElement('li');
-    li.innerHTML = `<div class="user-content">${user}</div><span>${pending.length + index + 1}</span>`;
+    li.innerHTML = `
+      <div class="user-content">
+        <a href="${mkUrl(user)}" target="_blank" rel="noopener noreferrer">${user}</a>
+      </div>
+      <span>${pending.length + index + 1}</span>`;
     resultList.appendChild(li);
   });
 }
