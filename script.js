@@ -59,7 +59,8 @@ processBtn.addEventListener('click', async () => {
       following = extractUsernames(followingContent);
       const pending = pendingContent ? extractUsernames(pendingContent) : [];
 
-      const notFollowingBack = following.filter(user => !followers.includes(user));
+        const followersSet = new Set(followers.map(u => u.toLowerCase()));
+        const notFollowingBack = following.filter(u => !followersSet.has(u.toLowerCase()));
       displayResults(notFollowingBack, pending);
     } catch (error) {
       alert('An error occurred while processing the file.');
@@ -77,8 +78,72 @@ refreshBtn.addEventListener('click', () => {
 function extractUsernames(htmlContent) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlContent, 'text/html');
-  const links = doc.querySelectorAll('a[href^="https://www.instagram.com/"]');
-  return Array.from(links).map(link => link.href.split('/')[3]).filter(Boolean);
+
+  // Preferisci i "card" principali per preservare l'ordine di visualizzazione
+  const cards = doc.querySelectorAll('main .uiBoxWhite.noborder');
+  const out = [];
+  const seen = new Set();
+
+  const push = (u) => {
+    const norm = normalizeUsername(u);
+    if (!norm) return;
+    if (seen.has(norm)) return;
+    seen.add(norm);
+    out.push(norm);
+  };
+
+  if (cards.length > 0) {
+    cards.forEach(card => {
+      // Nuovo formato: username in <h2>
+      const h2 = card.querySelector('h2');
+      if (h2 && h2.textContent) push(h2.textContent);
+
+      // Link presente in entrambi i formati (old: /username, new: /_u/username)
+      const a = card.querySelector('a[href*="instagram.com"]');
+      if (a && a.getAttribute('href')) {
+        const fromHref = usernameFromHref(a.getAttribute('href'));
+        if (fromHref) push(fromHref);
+      }
+    });
+    return out;
+  }
+
+  // Fallback generico: prendi qualsiasi anchor instagram nell'intero documento
+  const links = doc.querySelectorAll('a[href*="instagram.com"]');
+  links.forEach(a => {
+    const href = a.getAttribute('href') || '';
+    const u = usernameFromHref(href) || a.textContent;
+    if (u) push(u);
+  });
+
+  return out;
+}
+
+// Helpers
+
+function usernameFromHref(href) {
+  try {
+    const u = new URL(href, 'https://www.instagram.com/');
+    // pathname può essere: /username, /_u/username, o /username/qualcosa
+    let p = u.pathname.replace(/^\/+|\/+$/g, '');   // trim slash
+    if (!p) return null;
+    if (p.startsWith('_u/')) p = p.slice(3);        // rimuovi prefisso _u/
+    // prima componente è l'username
+    const first = p.split('/')[0];
+    // filtra eventuali pagine non-utente tipo "accounts", "explore", ecc.
+    if (!first) return null;
+    if (!/^[A-Za-z0-9._]+$/.test(first)) return null;
+    return first;
+  } catch {
+    // Se non è un URL valido prova con una regex semplice
+    const m = href.match(/instagram\.com\/(?:_u\/)?([A-Za-z0-9._]+)/i);
+    return m ? m[1] : null;
+  }
+}
+
+function normalizeUsername(s) {
+  if (!s) return '';
+  return s.replace(/^@+/, '').trim().toLowerCase();
 }
 
 function displayResults(notFollowingBack, pending) {
