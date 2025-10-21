@@ -77,6 +77,14 @@ ul li{
 }
 .user-content{ display: inline; }
 
+/* Link dei profili: stesso colore del testo ma con sottolineatura leggera */
+.user-content a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;   /* sottolineatura sottile e pulita */
+  text-underline-offset: 2px;       /* leggermente distanziata dal testo */
+}
+
 /* Buttons */
 .button{
   display: inline-block;
