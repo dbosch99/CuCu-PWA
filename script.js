@@ -69,9 +69,15 @@ processBtn.addEventListener('click', async () => {
   }
 });
 
-// --- REFRESH (solo reload, perché update del SW è automatico) ---
+// --- REFRESH ---
 refreshBtn.addEventListener('click', () => {
-  window.location.reload();
+  // forza URL unico per bypassare la cache
+  window.location.replace(window.location.pathname + '?v=' + Date.now());
+
+  // aggiorna anche eventuali service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.update()));
+  }
 });
 
 // --- HELPERS ---
