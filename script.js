@@ -13,13 +13,12 @@ let following = [];
 // --- FILE HANDLING ---
 fileInput.addEventListener('change', () => {
   if (fileInput.files.length > 0) {
-    fileInput.disabled = true;
     processBtn.disabled = false;
     processBtn.className = 'button button--primary';
 
-    fileLabel.textContent = 'Uploaded';
+    fileLabel.textContent = 'ZIP selected';
     fileLabel.className = 'button button--gray is-disabled';
-    fileLabel.setAttribute('aria-disabled', 'true'); // ← fix: niente manina, niente click
+    fileLabel.setAttribute('aria-disabled', 'true');
   }
 });
 
@@ -28,72 +27,93 @@ processBtn.addEventListener('click', async () => {
   processBtn.className = 'button button--gray-light is-disabled';
 
   const file = fileInput.files[0];
-  if (file) {
-    try {
-      const zip = await JSZip.loadAsync(file);
-      let followersFile = null;
-      let followingFile = null;
-      let pendingFile = null;
+  if (!file) {
+    alert('Please select a ZIP first.');
+    return;
+  }
 
-      zip.forEach((relativePath, file) => {
-        const lowerPath = relativePath.toLowerCase();
-        if (lowerPath.endsWith('followers_1.html') && !lowerPath.includes('__macosx') && !lowerPath.includes('._')) {
-          followersFile = file;
-        } else if (lowerPath.endsWith('following.html') && !lowerPath.includes('__macosx') && !lowerPath.includes('._')) {
-          followingFile = file;
-        } else if (lowerPath.endsWith('pending_follow_requests.html') && !lowerPath.includes('__macosx') && !lowerPath.includes('._')) {
-          pendingFile = file;
-        }
-      });
+  try {
+    const zip = await JSZip.loadAsync(file);
+    let followersFile = null;
+    let followingFile = null;
+    let pendingFile   = null;
 
-      if (!followersFile || !followingFile) {
-        alert('Required files not found in the ZIP.');
-        return;
-      }
+    zip.forEach((relativePath, zf) => {
+      const p = relativePath.toLowerCase();
+      const ok = !p.includes('__macosx') && !p.includes('._');
+      if (!ok) return;
 
-      const followersContent = await followersFile.async('string');
-      const followingContent = await followingFile.async('string');
-      const pendingContent = pendingFile ? await pendingFile.async('string') : null;
+      if (p.endsWith('followers_1.html') || p.endsWith('followers_1.json')) followersFile = zf;
+      else if (p.endsWith('following.html') || p.endsWith('following.json')) followingFile = zf;
+      else if (p.endsWith('pending_follow_requests.html') || p.endsWith('pending_follow_requests.json')) pendingFile = zf;
+    });
 
-      followers = extractUsernames(followersContent);
-      following = extractUsernames(followingContent);
-      const pending = pendingContent ? extractUsernames(pendingContent) : [];
-
-        const followersSet = new Set(followers.map(u => u.toLowerCase()));
-        const notFollowingBack = following.filter(u => !followersSet.has(u.toLowerCase()));
-      displayResults(notFollowingBack, pending);
-    } catch (error) {
-      alert('An error occurred while processing the file.');
-      console.error(error);
+    if (!followersFile || !followingFile) {
+      alert('Required files not found in the ZIP.');
+      return;
     }
+
+    const [followersText, followingText, pendingText] = await Promise.all([
+      followersFile.async('string'),
+      followingFile.async('string'),
+      pendingFile ? pendingFile.async('string') : Promise.resolve(null)
+    ]);
+
+    const followersIsJSON = followersFile.name.toLowerCase().endsWith('.json');
+    const followingIsJSON = followingFile.name.toLowerCase().endsWith('.json');
+    const pendingIsJSON   = pendingFile ? pendingFile.name.toLowerCase().endsWith('.json') : false;
+
+    followers = followersIsJSON
+      ? extractUsernamesFromFollowersJSON(followersText)
+      : extractUsernamesFromHTML(followersText);
+
+    following = followingIsJSON
+      ? extractUsernamesFromFollowingJSON(followingText)
+      : extractUsernamesFromHTML(followingText);
+
+    const pending = pendingText
+      ? (pendingIsJSON ? extractUsernamesFromPendingJSON(pendingText)
+                       : extractUsernamesFromHTML(pendingText))
+      : [];
+
+    const followersSet = new Set(followers.map(u => u.toLowerCase()));
+    const pendingSet   = new Set(pending.map(u => u.toLowerCase()));
+    const notFollowingBack = following
+      .filter(u => !followersSet.has(u.toLowerCase()))
+      .filter(u => !pendingSet.has(u.toLowerCase()));
+
+    displayResults(notFollowingBack, pending);
+  } catch (error) {
+    alert('An error occurred while processing the ZIP.');
+    console.error(error);
   }
 });
 
 // --- REFRESH ---
 refreshBtn.addEventListener('click', () => {
   // forza URL unico per bypassare la cache
-  window.location.replace(window.location.pathname + '?v=' + Date.now());
+  const { pathname, hash } = window.location;
+  window.location.replace(`${pathname}?v=${Date.now()}${hash || ''}`);
 
-  // aggiorna anche eventuali service worker
+  // aggiorna anche eventuale service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.update()));
   }
 });
 
-// --- HELPERS ---
-function extractUsernames(htmlContent) {
+// --- HELPERS (HTML) ---
+function extractUsernamesFromHTML(htmlContent) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlContent, 'text/html');
 
-  // Preferisci i "card" principali per preservare l'ordine di visualizzazione
+  // Preferisci i 'card' principali per preservare l'ordine di visualizzazione
   const cards = doc.querySelectorAll('main .uiBoxWhite.noborder');
   const out = [];
   const seen = new Set();
 
   const push = (u) => {
     const norm = normalizeUsername(u);
-    if (!norm) return;
-    if (seen.has(norm)) return;
+    if (!norm || seen.has(norm)) return;
     seen.add(norm);
     out.push(norm);
   };
@@ -125,7 +145,75 @@ function extractUsernames(htmlContent) {
   return out;
 }
 
-// Helpers
+// --- HELPERS (JSON) ---
+function extractUsernamesFromFollowersJSON(text) {
+  // followers_1.json = array di oggetti con string_list_data[{ href, value, timestamp }]
+  let data;
+  try { data = JSON.parse(text); } catch { return []; }
+  const out = [];
+  const seen = new Set();
+
+  for (const item of Array.isArray(data) ? data : []) {
+    const sld = Array.isArray(item?.string_list_data) ? item.string_list_data : [];
+    const first = sld[0] || {};
+    // preferisci 'value' se presente, altrimenti parse da href
+    const v = first.value || usernameFromHref(first.href || '');
+    const norm = normalizeUsername(v);
+    if (norm && !seen.has(norm)) { seen.add(norm); out.push(norm); }
+  }
+  return out;
+}
+
+function extractUsernamesFromFollowingJSON(text) {
+  // following.json = { relationships_following: [ { title, string_list_data:[{ href, timestamp }] } ] }
+  let obj;
+  try { obj = JSON.parse(text); } catch { return []; }
+  const arr = Array.isArray(obj?.relationships_following) ? obj.relationships_following : [];
+  const out = [];
+  const seen = new Set();
+
+  for (const item of arr) {
+    // preferisci 'title' (ha già l'username), fallback a href
+    const title = item?.title;
+    const href  = item?.string_list_data?.[0]?.href || '';
+    const cand  = title || usernameFromHref(href);
+    const norm  = normalizeUsername(cand);
+    if (norm && !seen.has(norm)) { seen.add(norm); out.push(norm); }
+  }
+  return out;
+}
+
+function extractUsernamesFromPendingJSON(text) {
+  // Possibili strutture: array come followers_1.json, oppure
+  // { relationships_follow_requests: [...] } (o campo simile)
+  try {
+    const parsed = JSON.parse(text);
+
+    if (Array.isArray(parsed)) {
+      return extractUsernamesFromFollowersJSON(text);
+    }
+
+    const maybe = parsed?.relationships_follow_requests || parsed?.relationships_follow_request || [];
+    if (Array.isArray(maybe)) {
+      const out = [];
+      const seen = new Set();
+      for (const item of maybe) {
+        const title = item?.title;
+        const href  = item?.string_list_data?.[0]?.href || '';
+        const cand  = title || usernameFromHref(href);
+        const norm  = normalizeUsername(cand);
+        if (norm && !seen.has(norm)) { seen.add(norm); out.push(norm); }
+      }
+      return out;
+    }
+
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+// Helpers comuni
 
 function usernameFromHref(href) {
   try {
@@ -133,16 +221,14 @@ function usernameFromHref(href) {
     // pathname può essere: /username, /_u/username, o /username/qualcosa
     let p = u.pathname.replace(/^\/+|\/+$/g, '');   // trim slash
     if (!p) return null;
-    if (p.startsWith('_u/')) p = p.slice(3);        // rimuovi prefisso _u/
-    // prima componente è l'username
-    const first = p.split('/')[0];
-    // filtra eventuali pagine non-utente tipo "accounts", "explore", ecc.
+    if (p.startsWith('_u/')) p = p.slice(3);        // rimuove prefisso _u/
+    const first = p.split('/')[0];                  // prima componente è l'username
     if (!first) return null;
     if (!/^[A-Za-z0-9._]+$/.test(first)) return null;
     return first;
   } catch {
-    // Se non è un URL valido prova con una regex semplice
-    const m = href.match(/instagram\.com\/(?:_u\/)?([A-Za-z0-9._]+)/i);
+    // fallback regex
+    const m = (href || '').match(/instagram\.com\/(?:_u\/)?([A-Za-z0-9._]+)/i);
     return m ? m[1] : null;
   }
 }
