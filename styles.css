@@ -140,3 +140,24 @@ label.button[aria-disabled="true"]{
 @media (prefers-reduced-motion: reduce){
   .button{ transition: none; }
 }
+
+/* Clic sul numero: aspetto e stato riga */
+ul li span.index{
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.08);
+}
+@media (prefers-color-scheme: dark){
+  ul li span.index{ background: rgba(255,255,255,0.12); }
+}
+
+/* Riga marcata come inattiva (dopo il click sul numero) */
+ul li.is-inactive{
+  background: #e57373;
+  color: #fff;
+}
+ul li.is-inactive a{
+  color: inherit; /* i link ereditano il bianco */
+}
