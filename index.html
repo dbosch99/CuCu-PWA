@@ -13,16 +13,12 @@
     <h1>Instagram CuCu</h1>
     <p>See who doesn't follow you back!</p>
 
-    <!-- Pulsante refresh -->
-    <button id="refreshBtn" class="button button--success">Refresh 🔄</button>
-
     <div class="button-group">
-      <!-- Input nascosto con label stile pulsante -->
-      <label for="fileInput" class="button button--gray" id="fileLabel">Select ZIP file</label>
+      <label for="fileInput" class="button button--gray" id="fileLabel">Select ZIP</label>
       <input type="file" id="fileInput" accept=".zip" style="display:none;">
-      
-      <!-- Inizialmente disabilitato -->
+
       <button id="processBtn" class="button button--gray-light is-disabled" disabled>Run</button>
+      <button id="refreshBtn" class="button button--success" title="Refresh">Refresh</button>
     </div>
 
     <h2 id="resultTitle" style="display:none;">
