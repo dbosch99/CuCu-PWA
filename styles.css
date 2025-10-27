@@ -43,7 +43,7 @@ body{
   text-align: center;
   padding: var(--space);
   line-height: 1.4;
-  touch-action: pan-x;
+  touch-action: auto;
   overflow-x: auto;                   /* ← permette di scorrere a dx/sx */
   -webkit-overflow-scrolling: touch;  /* ← scorrimento fluido su iOS */
 }
