@@ -43,7 +43,7 @@ body{
   text-align: center;
   padding: var(--space);
   line-height: 1.4;
-  touch-action: auto;
+  touch-action: pan-x pan-y;
   overflow-x: auto;                   /* ← permette di scorrere a dx/sx */
   -webkit-overflow-scrolling: touch;  /* ← scorrimento fluido su iOS */
 }
@@ -165,4 +165,21 @@ ul li.is-inactive{
 }
 ul li.is-inactive a{
   color: inherit; /* i link ereditano il bianco */
+}
+
+/* Titolo risultato */
+#resultTitle{
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+/* Hint sotto il titolo */
+#tapHint{
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 0px;
+  margin-bottom: 15px;
+  font-style: italic; /* opzionale */
 }
