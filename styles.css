@@ -51,8 +51,8 @@ body{
 /* Layout */
 .container {
   width: 100%;                        /* ← si adatta alla larghezza disponibile */
-  max-width: 400px;                   /* ← non supera mai 800 px */
-  min-width: 400px;                   /* ← forza lo scroll sotto 335 px */
+  max-width: 800px;                   /* ← non supera mai 800 px */
+  min-width: 800px;                   /* ← forza lo scroll sotto 335 px */
   margin: 0 auto;
   background: var(--card);
   padding: var(--space);
