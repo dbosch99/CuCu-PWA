@@ -60,8 +60,8 @@ body{
   box-shadow: var(--shadow);
 }
 
-/* Typography */
-h1{ font-size: 24px; margin: 0 0 10px; }
+/* Typography (base) */
+h1{ margin: 0 0 8px; }
 h2{ font-size: 18px; margin: 20px 0 10px; }
 p { margin: 0 0 20px; color: var(--muted); }
 
@@ -167,19 +167,78 @@ ul li.is-inactive a{
   color: inherit; /* i link ereditano il bianco */
 }
 
-/* Titolo risultato */
+/* ---- Title & Tagline overrides ---- */
+h1{
+  font-size: clamp(22px, 4.5vw, 28px);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin: 0 0 8px;
+}
+
+#tagline{
+  font-size: clamp(13px, 2.8vw, 16px);
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+/* Già presente ma lo riallineo qui per coerenza tipografica */
 #resultTitle{
-  font-size: 15px;
-  font-weight: 600;
-  margin-top: 10px;
+  font-size: clamp(14px, 2.6vw, 16px);
+  font-weight: 700;
+  margin-top: 8px;
   margin-bottom: 3px;
 }
 
-/* Hint sotto il titolo */
 #tapHint{
   font-size: 11px;
   color: var(--muted);
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 15px;
-  font-style: italic; /* opzionale */
+  font-style: italic;
+}
+
+/* ===========================
+   STILI TESTI PRINCIPALI (dimensioni fisse)
+   =========================== */
+
+/* Stile di 'Instagram CuCu' (titolo principale) */
+h1{
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 8px;
+  margin-left: 0;
+}
+
+/* Stile di 'See who doesn't follow you back!' (sottotitolo) */
+#tagline{
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 8px;
+  margin-left: 0;
+}
+
+/* Stile di 'Not following back or inactive:' (titolo risultati) */
+#resultTitle{
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 8px;
+  margin-right: 0;
+  margin-bottom: 1px;
+  margin-left: 0;
+}
+
+/* Stile di 'Tap on the progressive number to mark inactive profiles' (hint) */
+#tapHint{
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 16px;
+  margin-left: 0;
+  font-style: italic;
 }
