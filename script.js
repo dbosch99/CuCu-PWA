@@ -9,6 +9,7 @@ const resultList = document.getElementById('resultList');
 
 let followers = [];
 let following = [];
+let remainingCount = 0;
 
 // --- FILE HANDLING ---
 fileInput.addEventListener('change', () => {
@@ -247,31 +248,67 @@ function displayResults(notFollowingBack, pending) {
   }
 
   resultTitle.style.display = 'block';
-  resultCount.textContent = totalResults;
+    document.getElementById('tapHint').style.display = 'block';
+  remainingCount = totalResults;                 // contatore dinamico
+  resultCount.textContent = remainingCount;
   resultList.innerHTML = '';
 
   const mkUrl = u => `https://www.instagram.com/${encodeURIComponent(u)}/`;
 
-  // Pending (WAITING) in cima
-  pending.forEach((user, index) => {
+  const makeRow = (user, index, isWaiting) => {
     const li = document.createElement('li');
-    li.innerHTML = `
-      <div class="user-content">
-        <a href="${mkUrl(user)}" target="_blank" rel="noopener noreferrer">${user}</a> <b>(WAITING)</b>
-      </div>
-      <span>${index + 1}</span>`;
-    resultList.appendChild(li);
+
+    const left = document.createElement('div');
+    left.className = 'user-content';
+
+    const a = document.createElement('a');
+    a.href = mkUrl(user);
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = user;
+
+    left.appendChild(a);
+    if (isWaiting) {
+      const b = document.createElement('b');
+      b.innerText = ' (WAITING)';
+      left.appendChild(b);
+    }
+
+    const right = document.createElement('span');
+    right.className = 'index';
+    right.textContent = index;                  // numero sequenziale
+    right.title = 'Mark as inactive';
+    right.setAttribute('role', 'button');
+    right.tabIndex = 0;
+
+    const toggleInactive = () => {
+      const wasInactive = li.classList.toggle('is-inactive'); // aggiunge/rimuove
+      remainingCount += wasInactive ? -1 : 1;
+      if (remainingCount < 0) remainingCount = 0;
+      resultCount.textContent = remainingCount;
+    };
+
+    right.addEventListener('click', toggleInactive);
+    right.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleInactive();
+      }
+    });
+
+    li.appendChild(left);
+    li.appendChild(right);
+    return li;
+  };
+
+  // Pending (WAITING) in cima
+  pending.forEach((user, i) => {
+    resultList.appendChild(makeRow(user, i + 1, true));
   });
 
   // Not following back
-  notFollowingBack.forEach((user, index) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <div class="user-content">
-        <a href="${mkUrl(user)}" target="_blank" rel="noopener noreferrer">${user}</a>
-      </div>
-      <span>${pending.length + index + 1}</span>`;
-    resultList.appendChild(li);
+  notFollowingBack.forEach((user, i) => {
+    resultList.appendChild(makeRow(user, pending.length + i + 1, false));
   });
 }
 
