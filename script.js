@@ -90,16 +90,19 @@ processBtn.addEventListener('click', async () => {
   }
 });
 
-// --- REFRESH ---
-refreshBtn.addEventListener('click', () => {
-  // forza URL unico per bypassare la cache
-  const { pathname, hash } = window.location;
-  window.location.replace(`${pathname}?v=${Date.now()}${hash || ''}`);
-
-  // aggiorna anche eventuale service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.update()));
-  }
+// --- REFRESH (svuota cache SW e ricarica) ---
+refreshBtn.addEventListener('click', async () => {
+  try {
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
+        return; // il SW cancella la cache e ricarica automaticamente
+      }
+    }
+  } catch {}
+  // Fallback: cache-busting via query
+  location.replace(`${location.pathname}?v=${Date.now()}${location.hash || ''}`);
 });
 
 // --- HELPERS (HTML) ---
@@ -315,7 +318,7 @@ function displayResults(notFollowingBack, pending) {
 // --- SERVICE WORKER REGISTRATION (aggiornamento automatico) ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').then(reg => {
+    navigator.serviceWorker.register('/CuCu-PWA/service-worker.js', { scope: '/CuCu-PWA/' }).then(reg => {
       reg.update();
       setInterval(() => reg.update(), 60 * 60 * 1000); // controlla ogni ora
 
