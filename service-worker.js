@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-8-11-2025';
+const CACHE = 'cucu-9-11-2025';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi assoluti)
@@ -10,7 +10,7 @@ const ASSETS = [
   '/CuCu-PWA/script.js',
   '/CuCu-PWA/jszip.min.js',
   '/CuCu-PWA/manifest.json',
-  '/CuCu-PWA/apple-touch-icon.png',
+  '/CuCu-PWA/HomeSafari.png',
   '/CuCu-PWA/cucu-16.png',
   '/CuCu-PWA/cucu-32.png',
   '/CuCu-PWA/cucu-192.png',
