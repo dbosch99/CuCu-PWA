@@ -10,6 +10,8 @@ const ASSETS = [
   '/script.js',
   '/jszip.min.js',
   '/manifest.json',
+  '/cucu-16.png',
+  '/cucu-32.png',
   '/cucu-192.png',
   '/cucu-512.png',
   '/cucu-1024.png'
@@ -20,7 +22,7 @@ self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     await cache.addAll(ASSETS);
-    await self.skipWaiting(); // attiva il nuovo SW senza forzare reload
+// nessuno skipWaiting: aggiornamento solo al riavvio o via CLEAR_CACHE
   })());
 });
 
