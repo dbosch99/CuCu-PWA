@@ -319,7 +319,7 @@ function displayResults(notFollowingBack, pending) {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/CuCu-PWA/service-worker.js', { scope: '/CuCu-PWA/' })
+      .register('/service-worker.js', { scope: '/' })
       .catch(console.error);
   });
 }
