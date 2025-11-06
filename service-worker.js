@@ -2,7 +2,7 @@
 const CACHE = 'cucu-8-11-2025';
 // ========================================================================
 
-// Asset principali da mettere in cache
+// Asset principali da mettere in cache (percorsi assoluti)
 const ASSETS = [
   '/CuCu-PWA/',
   '/CuCu-PWA/index.html',
@@ -17,7 +17,7 @@ const ASSETS = [
   '/CuCu-PWA/cucu-512.png'
 ];
 
-// Installazione: aggiunge gli asset al cache
+// Installazione: precache e attivazione immediata
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
@@ -26,7 +26,7 @@ self.addEventListener('install', event => {
   })());
 });
 
-// Attivazione: rimuove vecchie cache
+// Attivazione: elimina cache vecchie e prendi controllo subito
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
@@ -35,10 +35,17 @@ self.addEventListener('activate', event => {
   })());
 });
 
-// Messaggi dalla pagina (usato dal pulsante Refresh)
+// Messaggi dalla pagina (Refresh manuale e attivazione immediata)
 self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'CLEAR_CACHE') {
-    // cancella la cache e ricarica
+  if (!event.data) return;
+
+  // Forza attivazione immediata del nuovo SW
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+
+  // Cancella cache e ricarica i client
+  if (event.data.type === 'CLEAR_CACHE') {
     event.waitUntil((async () => {
       const keys = await caches.keys();
       await Promise.all(keys.map(k => caches.delete(k)));
@@ -49,21 +56,28 @@ self.addEventListener('message', event => {
   }
 });
 
-// Gestione fetch: network-first per HTML, cache-first per risorse
+// Fetch: network-first per HTML/manifest/SW, cache-first per il resto
 self.addEventListener('fetch', event => {
   const req = event.request;
+
+  // Non gestire richieste non-GET
+  if (req.method !== 'GET') return;
+
   const url = new URL(req.url);
 
+  // Navigazioni/documenti
   if (req.mode === 'navigate' || req.destination === 'document') {
     event.respondWith(networkFirst(req));
     return;
   }
 
+  // Manifest e service worker
   if (url.pathname.endsWith('/manifest.json') || url.pathname.endsWith('/service-worker.js')) {
     event.respondWith(networkFirst(req));
     return;
   }
 
+  // Risorse statiche
   event.respondWith(cacheFirst(req));
 });
 
