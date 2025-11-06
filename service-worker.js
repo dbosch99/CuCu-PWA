@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-6-11-2025';
+const CACHE = 'cucu-7-11-2025';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi assoluti)
@@ -35,16 +35,10 @@ self.addEventListener('activate', event => {
   })());
 });
 
-// Messaggi dalla pagina (Refresh manuale e attivazione immediata)
+// Messaggi dalla pagina (solo refresh manuale)
 self.addEventListener('message', event => {
   if (!event.data) return;
 
-  // Forza attivazione immediata del nuovo SW
-  if (event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-
-  // Cancella cache e ricarica i client
   if (event.data.type === 'CLEAR_CACHE') {
     event.waitUntil((async () => {
       const keys = await caches.keys();
