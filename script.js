@@ -315,28 +315,11 @@ function displayResults(notFollowingBack, pending) {
   });
 }
 
-// --- SERVICE WORKER REGISTRATION (aggiornamento automatico) ---
+// --- SERVICE WORKER REGISTRATION (solo refresh manuale) ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/CuCu-PWA/service-worker.js', { scope: '/CuCu-PWA/' }).then(reg => {
-      reg.update();
-      setInterval(() => reg.update(), 60 * 60 * 1000); // controlla ogni ora
-
-      if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-
-      reg.addEventListener('updatefound', () => {
-        const sw = reg.installing;
-        if (!sw) return;
-        sw.addEventListener('statechange', () => {
-          if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-            reg.waiting && reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-          }
-        });
-      });
-
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-      });
-    }).catch(console.error);
+    navigator.serviceWorker
+      .register('/CuCu-PWA/service-worker.js', { scope: '/CuCu-PWA/' })
+      .catch(console.error);
   });
 }
