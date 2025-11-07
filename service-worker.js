@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-7-11-2025';
+const CACHE = 'cucu-2-11-2025';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi dalla root del sito)
