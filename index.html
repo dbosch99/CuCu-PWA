@@ -7,30 +7,24 @@
   <meta name="theme-color" content="#007bff">
 
   <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
 
-  <!-- Icona PWA installata -->
-  <link rel="apple-touch-icon" sizes="180x180" href="cucu0-180.png">
-  <link rel="apple-touch-icon" href="cucu0-1024.png">
-  <meta name="apple-mobile-web-app-title" content="CuCu">
+  <!-- Icona iOS (apple touch) -->
+  <link rel="apple-touch-icon" sizes="1024x1024" href="./cucu-1024.png">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="16x16" href="cucu0-16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="cucu0-32.png">
-
-  <!-- Icone PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="cucu0-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="cucu0-512.png">
+  <!-- Icone PWA (Android/Chromium) -->
+  <link rel="icon" type="image/png" sizes="192x192" href="./cucu-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./cucu-512.png">
 
   <!-- Open Graph -->
   <meta property="og:title" content="CuCu">
-  <meta property="og:image" content="cucu0-512.png">
-  <link rel="image_src" href="cucu0-512.png">
+  <meta property="og:image" content="./cucu-1024.png">
+  <link rel="image_src" href="./cucu-1024.png">
 
   <!-- Stili e script -->
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="jszip.min.js"></script>
-  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./jszip.min.js"></script>
+  <script defer src="./script.js"></script>
 </head>
 <body>
   <div class="container">
@@ -52,5 +46,16 @@
     </p>
     <ul id="resultList"></ul>
   </div>
+
+  <!-- Registrazione Service Worker per GitHub Pages (/CuCu-PWA) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('./service-worker.js', { scope: './' })
+          .catch(console.error);
+      });
+    }
+  </script>
 </body>
 </html>
