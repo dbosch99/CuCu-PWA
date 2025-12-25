@@ -35,42 +35,86 @@ processBtn.addEventListener('click', async () => {
 
   try {
     const zip = await JSZip.loadAsync(file);
-    let followersFile = null;
-    let followingFile = null;
-    let pendingFile   = null;
+      const followersFiles = [];
+      const followingFiles = [];
+      let pendingFile = null;
 
-    zip.forEach((relativePath, zf) => {
-      const p = relativePath.toLowerCase();
-      const ok = !p.includes('__macosx') && !p.includes('._');
-      if (!ok) return;
+      zip.forEach((relativePath, zf) => {
+        const p = relativePath.toLowerCase();
+        if (p.includes('__macosx') || p.includes('._')) return;
 
-      if (p.endsWith('followers_1.html') || p.endsWith('followers_1.json')) followersFile = zf;
-      else if (p.endsWith('following.html') || p.endsWith('following.json')) followingFile = zf;
-      else if (p.endsWith('pending_follow_requests.html') || p.endsWith('pending_follow_requests.json')) pendingFile = zf;
-    });
+        // ⚠️ lavora SOLO sul nome file, non sul path
+        const name = p.split('/').pop();
+        if (!name) return;
 
-    if (!followersFile || !followingFile) {
-      alert('Required files not found in the ZIP.');
-      return;
-    }
+        // pending (singolo)
+        if (name === 'pending_follow_requests.json' || name === 'pending_follow_requests.html') {
+          pendingFile = zf;
+          return;
+        }
 
-    const [followersText, followingText, pendingText] = await Promise.all([
-      followersFile.async('string'),
-      followingFile.async('string'),
-      pendingFile ? pendingFile.async('string') : Promise.resolve(null)
-    ]);
+        // followers: followers_1.json, followers_2.json, ...
+        if (name.startsWith('followers_') && (name.endsWith('.json') || name.endsWith('.html'))) {
+          followersFiles.push(zf);
+          return;
+        }
 
-    const followersIsJSON = followersFile.name.toLowerCase().endsWith('.json');
-    const followingIsJSON = followingFile.name.toLowerCase().endsWith('.json');
-    const pendingIsJSON   = pendingFile ? pendingFile.name.toLowerCase().endsWith('.json') : false;
+        // following: following.json (o following_1.json se mai esistesse)
+        if (
+          name === 'following.json' ||
+          name === 'following.html' ||
+          (name.startsWith('following_') && (name.endsWith('.json') || name.endsWith('.html')))
+        ) {
+          followingFiles.push(zf);
+          return;
+        }
+      });
 
-    followers = followersIsJSON
-      ? extractUsernamesFromFollowersJSON(followersText)
-      : extractUsernamesFromHTML(followersText);
+      if (followersFiles.length === 0 || followingFiles.length === 0) {
+        alert('Required files not found in the ZIP.');
+        return;
+      }
 
-    following = followingIsJSON
-      ? extractUsernamesFromFollowingJSON(followingText)
-      : extractUsernamesFromHTML(followingText);
+      const followersTexts = await Promise.all(
+        followersFiles.map(f => f.async('string'))
+      );
+
+      const followingTexts = await Promise.all(
+        followingFiles.map(f => f.async('string'))
+      );
+
+      const pendingText = pendingFile
+        ? await pendingFile.async('string')
+        : null;
+
+      followers = [];
+      following = [];
+
+      followersFiles.forEach((file, i) => {
+        const isJSON = file.name.toLowerCase().endsWith('.json');
+        const extracted = isJSON
+          ? extractUsernamesFromFollowersJSON(followersTexts[i])
+          : extractUsernamesFromHTML(followersTexts[i]);
+
+        followers.push(...extracted);
+      });
+
+      followingFiles.forEach((file, i) => {
+        const isJSON = file.name.toLowerCase().endsWith('.json');
+        const extracted = isJSON
+          ? extractUsernamesFromFollowingJSON(followingTexts[i])
+          : extractUsernamesFromHTML(followingTexts[i]);
+
+        following.push(...extracted);
+      });
+
+      // dedup finale di sicurezza
+      followers = [...new Set(followers)];
+      following = [...new Set(following)];
+
+      const pendingIsJSON = pendingFile
+        ? pendingFile.name.toLowerCase().endsWith('.json')
+        : false;
 
     const pending = pendingText
       ? (pendingIsJSON ? extractUsernamesFromPendingJSON(pendingText)
