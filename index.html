@@ -28,7 +28,18 @@
 </head>
 <body>
   <div class="container">
-    <h1>Instagram CuCu</h1>
+      <h1 class="title-row">
+        Instagram CuCu
+        <button
+          id="infoBtn"
+          class="info-button"
+          aria-label="Instructions"
+          title="Instructions"
+          type="button"
+        >
+          i
+        </button>
+      </h1>
     <p id="tagline">See who doesn't follow you back!</p>
 
     <div class="button-group">
@@ -45,6 +56,69 @@
       Tap on the progressive number to mark inactive profiles
     </p>
     <ul id="resultList"></ul>
+  </div>
+  
+  <!-- Instructions Overlay -->
+  <div id="instructionsOverlay" class="instructions-overlay" aria-hidden="true">
+      <div class="instructions-content">
+        <p style="text-align:center; margin-bottom:12px;">
+          Developer page:
+          <a
+            href="https://github.com/dbosch99"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            https://github.com/dbosch99
+          </a>
+        </p>
+
+        <hr>
+
+        <h2>Instructions</h2>
+
+      <h3>EN</h3>
+      <ol>
+        <li>Open Instagram and go to your profile</li>
+        <li>Tap ☰ in the top right corner and select "Account Centre"</li>
+        <li>Select "Your information and permissions"</li>
+        <li>Select "Export your information", then "Create export" and "Export to device"</li>
+        <li>Select "Customise information", clear everything except "Followers and Following", then tap "Save"</li>
+        <li>Select "Date range", choose "All time" and tap "Save"</li>
+        <li>Select "Start export", enter your password and tap "Continue"</li>
+        <li>After about 5–10 minutes, a "Download" button will appear next to "Cancel". You will also receive a confirmation email</li>
+        <li>Download the file. By default it is a .ZIP file. If your browser extracts it automatically, compress it again manually into .ZIP format</li>
+        <li>Open the CuCu app, tap "Select ZIP", choose the downloaded .ZIP file and press "Run"</li>
+      </ol>
+
+      <p><strong>Note:</strong><br>
+        The list may include profiles that have been closed or deleted. Tapping them will show
+        "The profile you are looking for does not exist".
+        To exclude them from the count, mark them inactive by tapping the progressive number.
+      </p>
+
+      <hr>
+
+      <h3>IT</h3>
+      <ol>
+        <li>Apri Instagram e vai nel tuo profilo</li>
+        <li>Tocca ☰ in alto a destra e seleziona "Centro gestione account"</li>
+        <li>Seleziona "Le tue informazioni e autorizzazioni"</li>
+        <li>Seleziona "Esporta le tue informazioni", poi "Crea esportazione" e "Esporta sul dispositivo"</li>
+        <li>Seleziona "Personalizza informazioni", deseleziona tutto tranne "Follower e persone/Pagine seguite" e premi "Salva"</li>
+        <li>Seleziona "Intervallo di date", scegli "Sempre" e premi "Salva"</li>
+        <li>Seleziona "Avvia esportazione", inserisci la password e premi "Continua"</li>
+        <li>Dopo circa 5–10 minuti comparirà il tasto "Download". Riceverai anche una mail di conferma</li>
+        <li>Scarica il file. Di default è un file .ZIP. Se il browser lo decomprime automaticamente, comprimilo manualmente in formato .ZIP</li>
+        <li>Apri l'app CuCu, seleziona "Select ZIP", scegli il file .ZIP e premi "Run"</li>
+      </ol>
+
+      <p><strong>Nota:</strong><br>
+        L'elenco può includere profili che hanno chiuso o cancellato l'account.
+        Per escluderli dal conteggio, evidenziali in rosso toccando il numero progressivo.
+      </p>
+
+      <button id="closeInstructions" class="button button--primary">Close</button>
+    </div>
   </div>
 
   <!-- Registrazione Service Worker per GitHub Pages (/CuCu-PWA) -->
