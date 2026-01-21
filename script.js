@@ -139,20 +139,42 @@ processBtn.addEventListener('click', async () => {
   }
 });
 
-// --- REFRESH (svuota cache SW e ricarica) ---
-refreshBtn.addEventListener('click', async () => {
-  try {
-    if ('serviceWorker' in navigator) {
-      const reg = await navigator.serviceWorker.getRegistration();
-      if (reg && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
-        return; // il SW cancella la cache e ricarica automaticamente
-      }
-    }
-  } catch {}
-  // Fallback: cache-busting via query
-  location.replace(`${location.pathname}?v=${Date.now()}${location.hash || ''}`);
+// --- REFRESH (online = hard refresh, offline = reset UI) ---
+refreshBtn.addEventListener('click', () => {
+  if (navigator.onLine) {
+    // ONLINE → refresh vero (bypass cache)
+    const url = new URL(location.href);
+    url.searchParams.set('_refresh', Date.now().toString());
+    location.href = url.toString();
+  } else {
+    // OFFLINE → reset interfaccia allo stato iniziale
+    resetUI();
+  }
 });
+
+function resetUI() {
+  // reset stato
+  followers = [];
+  following = [];
+  remainingCount = 0;
+
+  // reset input file
+  fileInput.value = '';
+
+  // reset bottoni
+  processBtn.disabled = true;
+  processBtn.className = 'button button--gray-light is-disabled';
+
+  fileLabel.textContent = 'Select ZIP';
+  fileLabel.className = 'button button--gray';
+  fileLabel.removeAttribute('aria-disabled');
+
+  // reset risultati
+  resultTitle.style.display = 'none';
+  document.getElementById('tapHint').style.display = 'none';
+  resultCount.textContent = '0';
+  resultList.innerHTML = '';
+}
 
 // --- HELPERS (HTML) ---
 function extractUsernamesFromHTML(htmlContent) {
@@ -385,14 +407,5 @@ if (infoBtn && instructionsOverlay && closeInstructionsBtn) {
     if (e.key === 'Escape' && instructionsOverlay.classList.contains('is-visible')) {
       closeInstructions();
     }
-  });
-}
-
-// --- SERVICE WORKER REGISTRATION (solo refresh manuale) ---
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/service-worker.js', { scope: '/' })
-      .catch(console.error);
   });
 }
