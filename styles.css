@@ -176,10 +176,10 @@ h1{
   font-size: 26px;
   font-weight: 800;
   letter-spacing: 0.2px;
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 8px;
-  margin-left: 0;
+  margin: 0 0 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Stile di 'See who doesn't follow you back!' (sottotitolo) */
@@ -211,4 +211,101 @@ h1{
   margin-bottom: 16px;
   margin-left: 0;
   font-style: italic;
+}
+
+/* ===========================
+   INFO BUTTON (cerchio con "i")
+   =========================== */
+
+.info-button{
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--muted);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-button:hover{
+  background: rgba(0,0,0,0.06);
+}
+
+@media (prefers-color-scheme: dark){
+  .info-button:hover{
+    background: rgba(255,255,255,0.12);
+  }
+}
+
+/* ===========================
+   INSTRUCTIONS OVERLAY
+   =========================== */
+
+.instructions-overlay{
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  display: none;
+}
+
+.instructions-overlay.is-visible{
+  display: block;
+}
+
+.instructions-content{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  text-align: left;
+}
+
+.instructions-content h2{
+  margin-top: 0;
+  text-align: center;
+}
+
+.instructions-content h3{
+  margin: 20px 0 10px;
+}
+
+.instructions-content ol{
+  padding-left: 20px;
+  margin: 0 0 20px;
+}
+
+.instructions-content li{
+  margin-bottom: 8px;
+}
+
+.instructions-content p{
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.instructions-content hr{
+  margin: 30px 0;
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,0.15);
+}
+
+@media (prefers-color-scheme: dark){
+  .instructions-content hr{
+    border-top-color: rgba(255,255,255,0.2);
+  }
+}
+
+#closeInstructions{
+  display: block;
+  margin: 30px auto 40px;
 }
