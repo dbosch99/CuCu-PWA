@@ -7,6 +7,11 @@ const resultTitle = document.getElementById('resultTitle');
 const resultCount = document.getElementById('resultCount');
 const resultList = document.getElementById('resultList');
 
+// Instructions overlay
+const infoBtn = document.getElementById('infoBtn');
+const instructionsOverlay = document.getElementById('instructionsOverlay');
+const closeInstructionsBtn = document.getElementById('closeInstructions');
+
 let followers = [];
 let following = [];
 let remainingCount = 0;
@@ -356,6 +361,30 @@ function displayResults(notFollowingBack, pending) {
   // Not following back
   notFollowingBack.forEach((user, i) => {
     resultList.appendChild(makeRow(user, pending.length + i + 1, false));
+  });
+}
+
+// --- INSTRUCTIONS OVERLAY LOGIC ---
+function openInstructions() {
+  instructionsOverlay.classList.add('is-visible');
+  instructionsOverlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInstructions() {
+  instructionsOverlay.classList.remove('is-visible');
+  instructionsOverlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+if (infoBtn && instructionsOverlay && closeInstructionsBtn) {
+  infoBtn.addEventListener('click', openInstructions);
+  closeInstructionsBtn.addEventListener('click', closeInstructions);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && instructionsOverlay.classList.contains('is-visible')) {
+      closeInstructions();
+    }
   });
 }
 
