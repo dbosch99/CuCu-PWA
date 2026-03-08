@@ -335,44 +335,48 @@ function displayResults(notFollowingBack, pending) {
     const left = document.createElement('div');
     left.className = 'user-content';
 
-    const a = document.createElement('a');
-    a.href = mkUrl(user);
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.textContent = user;
+      const a = document.createElement('a');
+      a.href = mkUrl(user);
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = user;
 
-    left.appendChild(a);
-    if (isWaiting) {
-      const b = document.createElement('b');
-      b.innerText = ' (WAITING)';
-      left.appendChild(b);
-    }
-
-    const right = document.createElement('span');
-    right.className = 'index';
-    right.textContent = index;                  // numero sequenziale
-    right.title = 'Mark as inactive';
-    right.setAttribute('role', 'button');
-    right.tabIndex = 0;
-
-    const toggleInactive = () => {
-      const wasInactive = li.classList.toggle('is-inactive'); // aggiunge/rimuove
-      remainingCount += wasInactive ? -1 : 1;
-      if (remainingCount < 0) remainingCount = 0;
-      resultCount.textContent = remainingCount;
-    };
-
-    right.addEventListener('click', toggleInactive);
-    right.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleInactive();
+      left.appendChild(a);
+      if (isWaiting) {
+        const b = document.createElement('b');
+        b.innerText = ' (WAITING)';
+        left.appendChild(b);
       }
-    });
 
-    li.appendChild(left);
-    li.appendChild(right);
-    return li;
+      const right = document.createElement('span');
+      right.className = 'index';
+      right.textContent = index;                  // numero sequenziale
+      right.title = 'Mark as inactive';
+      right.setAttribute('role', 'button');
+      right.tabIndex = 0;
+
+      const toggleInactive = () => {
+        const wasInactive = li.classList.toggle('is-inactive'); // aggiunge/rimuove
+        remainingCount += wasInactive ? -1 : 1;
+        if (remainingCount < 0) remainingCount = 0;
+        resultCount.textContent = remainingCount;
+      };
+
+      right.addEventListener('click', toggleInactive);
+      right.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleInactive();
+        }
+      });
+
+      li.appendChild(left);
+      li.appendChild(right);
+
+      // riduce automaticamente il font se il nome e' troppo lungo
+      setTimeout(() => fitUsername(a), 0);
+
+      return li;
   };
 
   // Pending (WAITING) in cima
@@ -384,6 +388,21 @@ function displayResults(notFollowingBack, pending) {
   notFollowingBack.forEach((user, i) => {
     resultList.appendChild(makeRow(user, pending.length + i + 1, false));
   });
+}
+
+function fitUsername(el) {
+  const container = el.parentElement;
+  if (!container) return;
+
+  // riparti sempre dalla dimensione standard
+  let size = 16;
+  el.style.fontSize = `${size}px`;
+
+  // riduci il font finche' il testo entra nello spazio disponibile
+  while (el.scrollWidth > container.clientWidth && size > 1) {
+    size -= 0.5;
+    el.style.fontSize = `${size}px`;
+  }
 }
 
 // --- INSTRUCTIONS OVERLAY LOGIC ---
