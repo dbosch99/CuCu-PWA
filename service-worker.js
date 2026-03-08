@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-21-01-2026-5';
+const CACHE = 'cucu-21-01-2026-6';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi dalla root del sito)
@@ -33,28 +33,19 @@ self.addEventListener('activate', event => {
   })());
 });
 
-// Messaggi dalla pagina (refresh manuale dal bottone)
-self.addEventListener('message', event => {
-  if (!event.data) return;
-
-  if (event.data.type === 'CLEAR_CACHE') {
-    event.waitUntil((async () => {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(k => caches.delete(k)));
-      await self.registration.unregister();
-      const clients = await self.clients.matchAll();
-      clients.forEach(client => client.navigate(client.url));
-    })());
-  }
-});
-
-// Fetch: network-first per HTML/manifest/SW, cache-first per il resto
+// Fetch: network-first per HTML/manifest/SW e per qualsiasi hard refresh, cache-first per il resto
 self.addEventListener('fetch', event => {
   const req = event.request;
 
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
+
+  // Se la richiesta contiene _refresh, forza sempre la rete
+  if (url.searchParams.has('_refresh')) {
+    event.respondWith(networkFirst(req));
+    return;
+  }
 
   if (req.mode === 'navigate' || req.destination === 'document') {
     event.respondWith(networkFirst(req));
