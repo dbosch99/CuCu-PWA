@@ -79,14 +79,22 @@ ul li{
 @media (prefers-color-scheme: dark){
   ul li{ background: #1f2530; }
 }
-.user-content{ display: inline; }
+.user-content{
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  margin-right: 12px;
+}
 
 /* Link dei profili: stesso colore del testo ma con sottolineatura leggera */
 .user-content a {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
   color: inherit;
   text-decoration: underline;
-  text-decoration-thickness: 1px;   /* sottolineatura sottile e pulita */
-  text-underline-offset: 2px;       /* leggermente distanziata dal testo */
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
 }
 
 /* Buttons */
