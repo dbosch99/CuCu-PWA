@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -45,7 +45,7 @@
           i
         </button>
       </h1>
-    <p id="tagline">See who doesn't follow you back!</p>
+      <p id="tagline">Scopri chi non ti ricambia il follow!</p>
 
     <div class="button-group">
       <label for="fileInput" class="button button--gray" id="fileLabel">Select ZIP</label>
@@ -54,85 +54,54 @@
       <button id="refreshBtn" class="button button--success" title="Refresh">Refresh</button>
     </div>
 
-    <h2 id="resultTitle" style="display:none;">
-      Not following back or inactive: <span id="resultCount">0</span>
-    </h2>
+    <div id="totalsRow">
+      <div class="totals-grid">
+        <div class="total-col">
+          <span class="total-label" id="followersLabel">Followers</span>
+          <span class="total-value" id="followersCount">0</span>
+        </div>
+
+        <div class="total-col">
+          <span class="total-label" id="followingLabel">Following*</span>
+          <span class="total-value" id="followingCount">0</span>
+        </div>
+
+        <div class="total-col">
+          <span class="total-label" id="notFollowBackLabel">Not following back*</span>
+          <span class="total-value" id="resultCount">0</span>
+        </div>
+      </div>
+    </div>
     <p id="tapHint" style="display:none;">
-      Tap on the progressive number to mark inactive profiles
+      The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram).<br>
+      Tap the progressive number to mark them in red and exclude them from "Following*" and "Not following back*".
     </p>
     <ul id="resultList"></ul>
   </div>
   
   <!-- Instructions Overlay -->
   <div id="instructionsOverlay" class="instructions-overlay" aria-hidden="true">
-      <div class="instructions-content">
-        <p style="text-align:center; margin-bottom:12px;">
-          Developer page:
-          <a
-            href="https://github.com/dbosch99"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://github.com/dbosch99
-          </a>
-        </p>
-
-        <hr>
-
-        <h2>Instructions</h2>
-
-        <h3>EN</h3>
-
-        <p>
-          This app compares your followers and following lists and returns the profiles that do not follow you back.
-          These lists can be downloaded from the Instagram app by following the steps below:
-        </p>
-
-        <ol>
-        <li>Open Instagram and go to your profile</li>
-        <li>Tap ☰ in the top right corner and select "Account Centre"</li>
-        <li>Select "Your information and permissions"</li>
-        <li>Select "Export your information", then "Create export" and "Export to device"</li>
-        <li>Select "Customise information", clear everything except "Followers and Following", then tap "Save"</li>
-        <li>Select "Date range", choose "All time" and tap "Save"</li>
-        <li>Select "Start export", enter your password and tap "Continue"</li>
-        <li>After about 5–10 minutes, a "Download" button will appear next to "Cancel". You will also receive a confirmation email</li>
-        <li>Download the file. By default it is a .ZIP file. If your browser extracts it automatically, compress it again manually into .ZIP format</li>
-        <li>Open the CuCu app, tap "Select ZIP", choose the downloaded .ZIP file and press "Run"</li>
-      </ol>
-
-      <p><strong>Note:</strong><br>
-        The list may include profiles that have been closed or deleted. Tapping them will show
-        "The profile you are looking for does not exist".
-        To exclude them from the count, mark them inactive by tapping the progressive number.
+    <div class="instructions-content">
+      <p id="developerLine" style="text-align:center; margin-bottom:12px;">
+        Developer page:
+        <a
+          href="https://github.com/dbosch99"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          https://github.com/dbosch99
+        </a>
       </p>
 
       <hr>
 
-      <h3>IT</h3>
+      <h2 id="instructionsTitle">Instructions</h2>
 
-      <p>
-        Questa app confronta la lista dei follower e dei profili seguiti e restituisce l'elenco dei profili che non ricambiano il follow.
-        Queste liste si scaricano dall'app Instagram seguendo questi passaggi:
-      </p>
+      <p id="instructionsIntro"></p>
 
-      <ol>
-        <li>Apri Instagram e vai nel tuo profilo</li>
-        <li>Tocca ☰ in alto a destra e seleziona "Centro gestione account"</li>
-        <li>Seleziona "Le tue informazioni e autorizzazioni"</li>
-        <li>Seleziona "Esporta le tue informazioni", poi "Crea esportazione" e "Esporta sul dispositivo"</li>
-        <li>Seleziona "Personalizza informazioni", deseleziona tutto tranne "Follower e persone/Pagine seguite" e premi "Salva"</li>
-        <li>Seleziona "Intervallo di date", scegli "Sempre" e premi "Salva"</li>
-        <li>Seleziona "Avvia esportazione", inserisci la password e premi "Continua"</li>
-        <li>Dopo circa 5–10 minuti comparirà il tasto "Download". Riceverai anche una mail di conferma</li>
-        <li>Scarica il file. Di default è un file .ZIP. Se il browser lo decomprime automaticamente, comprimilo manualmente in formato .ZIP</li>
-        <li>Apri l'app CuCu, seleziona "Select ZIP", scegli il file .ZIP e premi "Run"</li>
-      </ol>
+      <ol id="instructionsList"></ol>
 
-      <p><strong>Nota:</strong><br>
-        L'elenco può includere profili che hanno chiuso o cancellato l'account.
-        Per escluderli dal conteggio, evidenziali in rosso toccando il numero progressivo.
-      </p>
+      <p id="instructionsNote"></p>
 
       <button id="closeInstructions" class="button button--primary">Close</button>
     </div>
