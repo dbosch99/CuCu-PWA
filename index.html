@@ -38,8 +38,8 @@
         <button
           id="infoBtn"
           class="info-button"
-          aria-label="Instructions"
-          title="Instructions"
+          aria-label="Istruzioni"
+          title="Istruzioni"
           type="button"
         >
           i
@@ -48,34 +48,31 @@
       <p id="tagline">Scopri chi non ti ricambia il follow!</p>
 
     <div class="button-group">
-      <label for="fileInput" class="button button--gray" id="fileLabel">Select ZIP</label>
+      <label for="fileInput" class="button button--gray" id="fileLabel">Seleziona ZIP</label>
       <input type="file" id="fileInput" accept=".zip" style="display:none;">
-      <button id="processBtn" class="button button--gray-light is-disabled" disabled>Run</button>
-      <button id="refreshBtn" class="button button--success" title="Refresh">Refresh</button>
+      <button id="processBtn" class="button button--gray-light is-disabled" disabled>Avvia</button>
+      <button id="refreshBtn" class="button button--success" title="Aggiorna">Aggiorna</button>
     </div>
 
     <div id="totalsRow">
       <div class="totals-grid">
         <div class="total-col">
-          <span class="total-label" id="followersLabel">Followers</span>
+          <span class="total-label" id="followersLabel">Follower</span>
           <span class="total-value" id="followersCount">0</span>
         </div>
 
         <div class="total-col">
-          <span class="total-label" id="followingLabel">Following*</span>
+          <span class="total-label" id="followingLabel">Seguiti*</span>
           <span class="total-value" id="followingCount">0</span>
         </div>
 
         <div class="total-col">
-          <span class="total-label" id="notFollowBackLabel">Not following back*</span>
+          <span class="total-label" id="notFollowBackLabel">Non ricambiano*</span>
           <span class="total-value" id="resultCount">0</span>
         </div>
       </div>
     </div>
-    <p id="tapHint" style="display:none;">
-      The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram).<br>
-      Tap the progressive number to mark them in red and exclude them from "Following*" and "Not following back*".
-    </p>
+    <p id="tapHint" style="display:none;"></p>
     <ul id="resultList"></ul>
   </div>
   
@@ -83,7 +80,7 @@
   <div id="instructionsOverlay" class="instructions-overlay" aria-hidden="true">
     <div class="instructions-content">
       <p id="developerLine" style="text-align:center; margin-bottom:12px;">
-        Developer page:
+        Pagina sviluppatore:
         <a
           href="https://github.com/dbosch99"
           target="_blank"
@@ -95,7 +92,7 @@
 
       <hr>
 
-      <h2 id="instructionsTitle">Instructions</h2>
+      <h2 id="instructionsTitle">Istruzioni</h2>
 
       <p id="instructionsIntro"></p>
 
@@ -103,7 +100,7 @@
 
       <p id="instructionsNote"></p>
 
-      <button id="closeInstructions" class="button button--primary">Close</button>
+      <button id="closeInstructions" class="button button--primary">Chiudi</button>
     </div>
   </div>
 
