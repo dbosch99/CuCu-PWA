@@ -99,16 +99,23 @@ ul li{
 
 /* Buttons */
 .button{
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin: 6px 4px;
   padding: var(--btn-pad-y) var(--btn-pad-x);
-  font-size: 14px;
+  width: auto;
+  min-width: 0;
+  font-size: clamp(10px, 2.8vw, 14px);
   font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-align: center;
   border-radius: var(--radius);
   border: 0;
   cursor: pointer;
   color: var(--btn-fg);
-  background: var(--gray); /* default neutral */
+  background: var(--gray);
   transition: filter 120ms ease, transform 80ms ease;
 }
 .button:focus-visible{
@@ -146,7 +153,12 @@ label.button[aria-disabled="true"]{
   align-items: center;
   gap: 10px;
   margin: 10px 0;
-  flex-wrap: nowrap;  /* ← niente a capo sui pulsanti */
+  flex-wrap: nowrap;
+}
+
+.button-group > .button,
+.button-group > label.button{
+  flex: 0 0 auto;
 }
 
 /* Riduci animazioni per chi lo preferisce */
