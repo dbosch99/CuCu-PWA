@@ -6,6 +6,8 @@ const fileLabel = document.getElementById('fileLabel');
 const resultCount = document.getElementById('resultCount');
 const resultList = document.getElementById('resultList');
 
+const actionButtons = [fileLabel, processBtn, refreshBtn];
+
 const followersCount = document.getElementById('followersCount');
 const followingCount = document.getElementById('followingCount');
 const totalsRow = document.getElementById('totalsRow');
@@ -151,6 +153,7 @@ function applyTranslations() {
 }
 
 applyTranslations();
+setTimeout(fitActionButtons, 0);
 
 // --- FILE HANDLING ---
 fileInput.addEventListener('change', () => {
@@ -161,6 +164,8 @@ fileInput.addEventListener('change', () => {
     fileLabel.textContent = T.zipSelected;
     fileLabel.className = 'button button--gray is-disabled';
     fileLabel.setAttribute('aria-disabled', 'true');
+
+    setTimeout(fitActionButtons, 0);
   }
 });
 
@@ -324,6 +329,8 @@ function resetUI() {
   document.getElementById('tapHint').style.display = 'none';
   resultCount.textContent = '0';
   resultList.innerHTML = '';
+
+  setTimeout(fitActionButtons, 0);
 }
 
 // --- HELPERS (HTML) ---
@@ -579,7 +586,25 @@ function fitTotalsLabels() {
   }
 }
 
-window.addEventListener('resize', fitTotalsLabels);
+function fitActionButtons() {
+  const buttons = actionButtons.filter(Boolean);
+  if (buttons.length === 0) return;
+
+  let size = 14;
+  buttons.forEach(el => el.style.fontSize = `${size}px`);
+
+  const fits = () => buttons.every(el => el.scrollWidth <= el.clientWidth);
+
+  while (!fits() && size > 1) {
+    size -= 0.5;
+    buttons.forEach(el => el.style.fontSize = `${size}px`);
+  }
+}
+
+window.addEventListener('resize', () => {
+  fitTotalsLabels();
+  fitActionButtons();
+});
 
 // --- INSTRUCTIONS OVERLAY LOGIC ---
 function openInstructions() {
