@@ -3,9 +3,24 @@ const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
 const refreshBtn = document.getElementById('refreshBtn');
 const fileLabel = document.getElementById('fileLabel');
-const resultTitle = document.getElementById('resultTitle');
 const resultCount = document.getElementById('resultCount');
 const resultList = document.getElementById('resultList');
+
+const followersCount = document.getElementById('followersCount');
+const followingCount = document.getElementById('followingCount');
+const totalsRow = document.getElementById('totalsRow');
+
+const followersLabel = document.getElementById('followersLabel');
+const followingLabel = document.getElementById('followingLabel');
+const notFollowBackLabel = document.getElementById('notFollowBackLabel');
+
+const tagline = document.getElementById('tagline');
+const tapHint = document.getElementById('tapHint');
+const instructionsTitle = document.getElementById('instructionsTitle');
+const instructionsIntro = document.getElementById('instructionsIntro');
+const instructionsList = document.getElementById('instructionsList');
+const instructionsNote = document.getElementById('instructionsNote');
+const developerLine = document.getElementById('developerLine');
 
 // Instructions overlay
 const infoBtn = document.getElementById('infoBtn');
@@ -15,6 +30,127 @@ const closeInstructionsBtn = document.getElementById('closeInstructions');
 let followers = [];
 let following = [];
 let remainingCount = 0;
+let visibleFollowingCount = 0;
+
+const langs = navigator.languages || [navigator.language || ''];
+const isItalian = langs.some(l => String(l).toLowerCase().startsWith('it'));
+const locale = isItalian ? 'it' : 'en';
+
+const I18N = {
+  it: {
+    zipSelected: 'ZIP selezionato',
+    selectZip: 'Seleziona ZIP',
+    run: 'Avvia',
+    refresh: 'Aggiorna',
+    instructions: 'Istruzioni',
+    close: 'Chiudi',
+    tagline: 'Scopri chi non ti ricambia il follow!',
+    followers: 'Follower',
+    following: 'Seguiti*',
+    notFollowingBack: 'Non ricambiano*',
+    tapHint: 'Il simbolo * indica che i conteggi includono profili disattivati o eliminati (non mostrati da Instagram).<br>Tocca il numero progressivo per evidenziarli in rosso ed escluderli da "Seguiti*" e "Non ricambiano*".',
+    developerPage: 'Pagina sviluppatore:',
+    instructionsIntro: 'Questa app confronta la lista dei follower e dei profili seguiti e restituisce l\'elenco dei profili che non ricambiano il follow. Queste liste si scaricano dall\'app Instagram seguendo questi passaggi:',
+    instructionsList: [
+      'Apri Instagram e vai nel tuo profilo',
+      'Tocca ☰ in alto a destra e seleziona "Centro gestione account"',
+      'Seleziona "Le tue informazioni e autorizzazioni"',
+      'Seleziona "Esporta le tue informazioni", poi "Crea esportazione" e "Esporta sul dispositivo"',
+      'Seleziona "Personalizza informazioni", deseleziona tutto tranne "Follower e persone/Pagine seguite" e premi "Salva"',
+      'Seleziona "Intervallo di date", scegli "Sempre" e premi "Salva"',
+      'Seleziona "Formato", scegli "JSON" e premi "Salva"',
+      'Seleziona "Avvia esportazione", inserisci la password e premi "Continua"',
+      'Dopo circa 5–10 minuti comparirà il tasto "Download". Riceverai anche una mail di conferma',
+      'Scarica il file. Di default è un file .ZIP. Se il browser lo decomprime automaticamente, comprimilo manualmente in formato .ZIP',
+      'Apri l\'app CuCu, seleziona "Seleziona ZIP", scegli il file .ZIP e premi "Avvia"'
+    ],
+    instructionsNote: '<strong>Nota:</strong><br>L\'elenco può includere profili che hanno chiuso o cancellato l\'account. Per escluderli dal conteggio, evidenziali in rosso toccando il numero progressivo.',
+    alertSelectZip: 'Seleziona prima un file ZIP.',
+    alertMissingFiles: 'File richiesti non trovati nello ZIP.',
+    alertProcessingError: 'Si è verificato un errore durante l\'elaborazione del file ZIP.',
+    alertNoResults: 'Nessun risultato da mostrare.'
+  },
+  en: {
+    zipSelected: 'ZIP selected',
+    selectZip: 'Select ZIP',
+    run: 'Run',
+    refresh: 'Refresh',
+    instructions: 'Instructions',
+    close: 'Close',
+    tagline: "See who doesn't follow you back!",
+    followers: 'Followers',
+    following: 'Following*',
+    notFollowingBack: 'Not following back*',
+    tapHint: 'The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram).<br>Tap the progressive number to mark them in red and exclude them from "Following*" and "Not following back*".',
+    developerPage: 'Developer page:',
+    instructionsIntro: 'This app compares your followers and following lists and returns the profiles that do not follow you back. These lists can be downloaded from the Instagram app by following the steps below:',
+    instructionsList: [
+      'Open Instagram and go to your profile',
+      'Tap ☰ in the top right corner and select "Account Centre"',
+      'Select "Your information and permissions"',
+      'Select "Export your information", then "Create export" and "Export to device"',
+      'Select "Customise information", clear everything except "Followers and Following", then tap "Save"',
+      'Select "Date range", choose "All time" and tap "Save"',
+      'Select "Format", choose "JSON" and tap "Save"',
+      'Select "Start export", enter your password and tap "Continue"',
+      'After about 5–10 minutes, a "Download" button will appear next to "Cancel". You will also receive a confirmation email',
+      'Download the file. By default it is a .ZIP file. If your browser extracts it automatically, compress it again manually into .ZIP format',
+      'Open the CuCu app, tap "Select ZIP", choose the downloaded .ZIP file and press "Run"'
+    ],
+    instructionsNote: '<strong>Note:</strong><br>The list may include profiles that have been closed or deleted. To exclude them from the count, mark them in red by tapping the progressive number.',
+    alertSelectZip: 'Please select a ZIP first.',
+    alertMissingFiles: 'Required files not found in the ZIP.',
+    alertProcessingError: 'An error occurred while processing the ZIP.',
+    alertNoResults: 'No results to display.'
+  }
+};
+
+const T = I18N[locale];
+
+function applyTranslations() {
+  document.documentElement.lang = locale;
+
+  if (tagline) tagline.textContent = T.tagline;
+  if (fileLabel) fileLabel.textContent = T.selectZip;
+  if (processBtn) processBtn.textContent = T.run;
+  if (refreshBtn) {
+    refreshBtn.textContent = T.refresh;
+    refreshBtn.title = T.refresh;
+  }
+
+  if (followersLabel) followersLabel.textContent = T.followers;
+  if (followingLabel) followingLabel.textContent = T.following;
+  if (notFollowBackLabel) notFollowBackLabel.textContent = T.notFollowingBack;
+
+  if (tapHint) tapHint.innerHTML = T.tapHint;
+
+  if (infoBtn) {
+    infoBtn.setAttribute('aria-label', T.instructions);
+    infoBtn.setAttribute('title', T.instructions);
+  }
+
+  if (instructionsTitle) instructionsTitle.textContent = T.instructions;
+  if (closeInstructionsBtn) closeInstructionsBtn.textContent = T.close;
+
+  if (developerLine) {
+    developerLine.innerHTML = `${T.developerPage} <a href="https://github.com/dbosch99" target="_blank" rel="noopener noreferrer">https://github.com/dbosch99</a>`;
+  }
+
+  if (instructionsIntro) instructionsIntro.textContent = T.instructionsIntro;
+
+  if (instructionsList) {
+    instructionsList.innerHTML = '';
+    T.instructionsList.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      instructionsList.appendChild(li);
+    });
+  }
+
+  if (instructionsNote) instructionsNote.innerHTML = T.instructionsNote;
+}
+
+applyTranslations();
 
 // --- FILE HANDLING ---
 fileInput.addEventListener('change', () => {
@@ -22,7 +158,7 @@ fileInput.addEventListener('change', () => {
     processBtn.disabled = false;
     processBtn.className = 'button button--primary';
 
-    fileLabel.textContent = 'ZIP selected';
+    fileLabel.textContent = T.zipSelected;
     fileLabel.className = 'button button--gray is-disabled';
     fileLabel.setAttribute('aria-disabled', 'true');
   }
@@ -34,7 +170,7 @@ processBtn.addEventListener('click', async () => {
 
   const file = fileInput.files[0];
   if (!file) {
-    alert('Please select a ZIP first.');
+    alert(T.alertSelectZip);
     return;
   }
 
@@ -76,7 +212,7 @@ processBtn.addEventListener('click', async () => {
       });
 
       if (followersFiles.length === 0 || followingFiles.length === 0) {
-        alert('Required files not found in the ZIP.');
+        alert(T.alertMissingFiles);
         return;
       }
 
@@ -117,6 +253,14 @@ processBtn.addEventListener('click', async () => {
       followers = [...new Set(followers)];
       following = [...new Set(following)];
 
+      visibleFollowingCount = following.length;
+
+      if (followersCount) followersCount.textContent = followers.length;
+      if (followingCount) followingCount.textContent = visibleFollowingCount;
+      if (totalsRow) totalsRow.style.display = 'block';
+
+      setTimeout(fitTotalsLabels, 0);
+
       const pendingIsJSON = pendingFile
         ? pendingFile.name.toLowerCase().endsWith('.json')
         : false;
@@ -134,7 +278,7 @@ processBtn.addEventListener('click', async () => {
 
     displayResults(notFollowingBack, pending);
   } catch (error) {
-    alert('An error occurred while processing the ZIP.');
+    alert(T.alertProcessingError);
     console.error(error);
   }
 });
@@ -157,6 +301,7 @@ function resetUI() {
   followers = [];
   following = [];
   remainingCount = 0;
+  visibleFollowingCount = 0;
 
   // reset input file
   fileInput.value = '';
@@ -164,13 +309,18 @@ function resetUI() {
   // reset bottoni
   processBtn.disabled = true;
   processBtn.className = 'button button--gray-light is-disabled';
+  processBtn.textContent = T.run;
 
-  fileLabel.textContent = 'Select ZIP';
+  fileLabel.textContent = T.selectZip;
   fileLabel.className = 'button button--gray';
   fileLabel.removeAttribute('aria-disabled');
 
   // reset risultati
-  resultTitle.style.display = 'none';
+  if (totalsRow) totalsRow.style.display = 'none';
+  if (followersCount) followersCount.textContent = '0';
+  if (followingCount) followingCount.textContent = '0';
+  visibleFollowingCount = 0;
+
   document.getElementById('tapHint').style.display = 'none';
   resultCount.textContent = '0';
   resultList.innerHTML = '';
@@ -317,12 +467,11 @@ function displayResults(notFollowingBack, pending) {
   const totalResults = notFollowingBack.length + pending.length;
 
   if (totalResults === 0) {
-    alert('No results to display.');
+    alert(T.alertNoResults);
     return;
   }
 
-  resultTitle.style.display = 'block';
-    document.getElementById('tapHint').style.display = 'block';
+  document.getElementById('tapHint').style.display = 'block';
   remainingCount = totalResults;                 // contatore dinamico
   resultCount.textContent = remainingCount;
   resultList.innerHTML = '';
@@ -357,9 +506,14 @@ function displayResults(notFollowingBack, pending) {
 
       const toggleInactive = () => {
         const wasInactive = li.classList.toggle('is-inactive'); // aggiunge/rimuove
+
         remainingCount += wasInactive ? -1 : 1;
         if (remainingCount < 0) remainingCount = 0;
         resultCount.textContent = remainingCount;
+
+        visibleFollowingCount += wasInactive ? -1 : 1;
+        if (visibleFollowingCount < 0) visibleFollowingCount = 0;
+        if (followingCount) followingCount.textContent = visibleFollowingCount;
       };
 
       right.addEventListener('click', toggleInactive);
@@ -404,6 +558,28 @@ function fitUsername(el) {
     el.style.fontSize = `${size}px`;
   }
 }
+
+function fitTotalsLabels() {
+  const labels = [followersLabel, followingLabel, notFollowBackLabel].filter(Boolean);
+  if (labels.length === 0) return;
+
+  // ripristina dimensione standard uguale per tutte
+  let size = 16;
+  labels.forEach(el => el.style.fontSize = `${size}px`);
+
+  // trova il contenitore disponibile di ciascuna label
+  const fits = () => labels.every(el => {
+    const parent = el.parentElement;
+    return parent && el.scrollWidth <= parent.clientWidth;
+  });
+
+  while (!fits() && size > 1) {
+    size -= 0.5;
+    labels.forEach(el => el.style.fontSize = `${size}px`);
+  }
+}
+
+window.addEventListener('resize', fitTotalsLabels);
 
 // --- INSTRUCTIONS OVERLAY LOGIC ---
 function openInstructions() {
