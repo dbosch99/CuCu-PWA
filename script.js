@@ -50,7 +50,7 @@ const I18N = {
     followers: 'Follower',
     following: 'Seguiti*',
     notFollowingBack: 'Non ricambiano*',
-    tapHint: 'Il simbolo * indica che i conteggi includono profili disattivati o eliminati (non mostrati da Instagram).<br>Tocca il numero progressivo per evidenziarli in rosso ed escluderli da "Seguiti*" e "Non ricambiano*".',
+    tapHint: 'Il simbolo * indica che i conteggi includono profili disattivati o eliminati (non mostrati da App Instagram).',
     developerPage: 'Pagina sviluppatore:',
     instructionsIntro: 'Questa app confronta la lista dei follower e dei profili seguiti e restituisce l\'elenco dei profili che non ricambiano il follow. Queste liste si scaricano dall\'app Instagram seguendo questi passaggi:',
     instructionsList: [
@@ -83,7 +83,7 @@ const I18N = {
     followers: 'Followers',
     following: 'Following*',
     notFollowingBack: 'Not following back*',
-    tapHint: 'The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram).<br>Tap the progressive number to mark them in red and exclude them from "Following*" and "Not following back*".',
+    tapHint: 'The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram App).',
     developerPage: 'Developer page:',
     instructionsIntro: 'This app compares your followers and following lists and returns the profiles that do not follow you back. These lists can be downloaded from the Instagram app by following the steps below:',
     instructionsList: [
