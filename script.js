@@ -66,7 +66,7 @@ const I18N = {
       'Scarica il file. Di default è un file .ZIP. Se il browser lo decomprime automaticamente, comprimilo manualmente in formato .ZIP',
       'Apri l\'app CuCu, seleziona "Seleziona ZIP", scegli il file .ZIP e premi "Avvia"'
     ],
-    instructionsNote: '<strong>Nota:</strong><br>L\'elenco può includere profili che hanno chiuso o cancellato l\'account. Per escluderli dal conteggio, evidenziali in rosso toccando il numero progressivo.',
+    instructionsNote: '<strong>Nota:</strong><br>• Il numero di "Follower" può risultare inferiore rispetto a quello mostrato da Instagram: Instagram include talvolta anche account disattivati o eliminati.<br>• Il numero di "Seguiti*" può risultare maggiore: CuCu include anche profili eliminati o disattivati, che Instagram non mostra.<br>• Tocca il numero progressivo per evidenziare un profilo in rosso ed escluderlo dal conteggio (utile per account eliminati o disattivati).',
     alertSelectZip: 'Seleziona prima un file ZIP.',
     alertMissingFiles: 'File richiesti non trovati nello ZIP.',
     alertProcessingError: 'Si è verificato un errore durante l\'elaborazione del file ZIP.',
@@ -99,8 +99,7 @@ const I18N = {
       'Download the file. By default it is a .ZIP file. If your browser extracts it automatically, compress it again manually into .ZIP format',
       'Open the CuCu app, tap "Select ZIP", choose the downloaded .ZIP file and press "Run"'
     ],
-    instructionsNote: '<strong>Note:</strong><br>The list may include profiles that have been closed or deleted. To exclude them from the count, mark them in red by tapping the progressive number.',
-    alertSelectZip: 'Please select a ZIP first.',
+    instructionsNote: '<strong>Note:</strong><br>• The "Followers" count may be lower than Instagram: Instagram may include deactivated or deleted accounts.<br>• The "Following*" count may be higher: CuCu includes deleted or deactivated profiles that Instagram does not show.<br>• Tap the progressive number to mark a profile in red and exclude it from the count (useful for deleted or deactivated accounts).',
     alertMissingFiles: 'Required files not found in the ZIP.',
     alertProcessingError: 'An error occurred while processing the ZIP.',
     alertNoResults: 'No results to display.'
@@ -274,12 +273,10 @@ processBtn.addEventListener('click', async () => {
       ? (pendingIsJSON ? extractUsernamesFromPendingJSON(pendingText)
                        : extractUsernamesFromHTML(pendingText))
       : [];
-
+      
     const followersSet = new Set(followers.map(u => u.toLowerCase()));
-    const pendingSet   = new Set(pending.map(u => u.toLowerCase()));
     const notFollowingBack = following
-      .filter(u => !followersSet.has(u.toLowerCase()))
-      .filter(u => !pendingSet.has(u.toLowerCase()));
+      .filter(u => !followersSet.has(u.toLowerCase()));
 
     displayResults(notFollowingBack, pending);
   } catch (error) {
@@ -416,8 +413,6 @@ function extractUsernamesFromFollowingJSON(text) {
 }
 
 function extractUsernamesFromPendingJSON(text) {
-  // Possibili strutture: array come followers_1.json, oppure
-  // { relationships_follow_requests: [...] } (o campo simile)
   try {
     const parsed = JSON.parse(text);
 
@@ -425,17 +420,29 @@ function extractUsernamesFromPendingJSON(text) {
       return extractUsernamesFromFollowersJSON(text);
     }
 
-    const maybe = parsed?.relationships_follow_requests || parsed?.relationships_follow_request || [];
+    const maybe =
+      parsed?.relationships_follow_requests_sent ||
+      parsed?.relationships_follow_requests ||
+      parsed?.relationships_follow_request ||
+      [];
+
     if (Array.isArray(maybe)) {
       const out = [];
       const seen = new Set();
+
       for (const item of maybe) {
-        const title = item?.title;
+        const value = item?.string_list_data?.[0]?.value || '';
         const href  = item?.string_list_data?.[0]?.href || '';
-        const cand  = title || usernameFromHref(href);
+        const title = item?.title || '';
+        const cand  = value || title || usernameFromHref(href);
         const norm  = normalizeUsername(cand);
-        if (norm && !seen.has(norm)) { seen.add(norm); out.push(norm); }
+
+        if (norm && !seen.has(norm)) {
+          seen.add(norm);
+          out.push(norm);
+        }
       }
+
       return out;
     }
 
@@ -471,15 +478,15 @@ function normalizeUsername(s) {
 }
 
 function displayResults(notFollowingBack, pending) {
-  const totalResults = notFollowingBack.length + pending.length;
-
-  if (totalResults === 0) {
+  const totalResults = notFollowingBack.length;
+    
+  if (totalResults === 0 && pending.length === 0) {
     alert(T.alertNoResults);
     return;
   }
 
   document.getElementById('tapHint').style.display = 'block';
-  remainingCount = totalResults;                 // contatore dinamico
+  remainingCount = totalResults;                 // solo "Not following back", esclusi i WAITING
   resultCount.textContent = remainingCount;
   resultList.innerHTML = '';
 
@@ -513,6 +520,8 @@ function displayResults(notFollowingBack, pending) {
 
       const toggleInactive = () => {
         const wasInactive = li.classList.toggle('is-inactive'); // aggiunge/rimuove
+
+        if (isWaiting) return;
 
         remainingCount += wasInactive ? -1 : 1;
         if (remainingCount < 0) remainingCount = 0;
