@@ -243,9 +243,9 @@ h1{
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 1px solid var(--muted);
-  background: transparent;
-  color: var(--muted);
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--btn-fg);
   font-size: 13px;
   font-weight: 700;
   line-height: 1;
@@ -257,12 +257,12 @@ h1{
 }
 
 .info-button:hover{
-  background: rgba(0,0,0,0.06);
+  filter: brightness(1.05);
 }
 
 @media (prefers-color-scheme: dark){
   .info-button:hover{
-    background: rgba(255,255,255,0.12);
+    filter: brightness(1.05);
   }
 }
 
@@ -369,4 +369,8 @@ h1{
   font-size: 28px;
   font-weight: 800;
   line-height: 1;
+}
+
+#resultCount{
+  color: orange;
 }
