@@ -87,14 +87,17 @@ ul li{
 }
 
 /* Link dei profili: stesso colore del testo ma con sottolineatura leggera */
-.user-content a {
-  display: inline-block;
-  max-width: 100%;
-  white-space: nowrap;
-  color: inherit;
+.link-like{
+  color: var(--primary);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.link-like:hover{
+  filter: brightness(1.05);
 }
 
 /* Buttons */
