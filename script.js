@@ -23,6 +23,7 @@ const instructionsIntro = document.getElementById('instructionsIntro');
 const instructionsList = document.getElementById('instructionsList');
 const instructionsNote = document.getElementById('instructionsNote');
 const shareLine = document.getElementById('shareLine');
+const shareLink = document.getElementById('shareLink');
 const developerLine = document.getElementById('developerLine');
 
 // Instructions overlay
@@ -137,7 +138,7 @@ function applyTranslations() {
   if (closeInstructionsBtn) closeInstructionsBtn.textContent = T.close;
   
   if (shareLine) {
-    shareLine.innerHTML = `${T.shareApp} <a href="https://dbosch99.github.io/CuCu-PWA/" target="_blank" rel="noopener noreferrer">https://dbosch99.github.io/CuCu-PWA/</a>`;
+    shareLine.innerHTML = `${T.shareApp} <span id="shareLink" class="link-like" role="button" tabindex="0">https://dbosch99.github.io/CuCu-PWA/</span>`;
   }
 
   if (developerLine) {
@@ -158,7 +159,45 @@ function applyTranslations() {
   if (instructionsNote) instructionsNote.innerHTML = T.instructionsNote;
 }
 
+function bindShareLink() {
+  const shareLink = document.getElementById('shareLink');
+  if (!shareLink) return;
+
+  const copyUrl = async () => {
+    const url = 'https://dbosch99.github.io/CuCu-PWA/';
+    const copiedText = locale === 'it' ? 'Copiato!' : 'Copied!';
+
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = url;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+
+    const original = url;
+    shareLink.textContent = copiedText;
+
+    setTimeout(() => {
+      shareLink.textContent = original;
+    }, 1500);
+  };
+
+  shareLink.addEventListener('click', copyUrl);
+
+  shareLink.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      copyUrl();
+    }
+  });
+}
+
 applyTranslations();
+bindShareLink();
 setTimeout(fitActionButtons, 0);
 
 // --- FILE HANDLING ---
