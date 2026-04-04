@@ -22,6 +22,7 @@ const instructionsTitle = document.getElementById('instructionsTitle');
 const instructionsIntro = document.getElementById('instructionsIntro');
 const instructionsList = document.getElementById('instructionsList');
 const instructionsNote = document.getElementById('instructionsNote');
+const shareLine = document.getElementById('shareLine');
 const developerLine = document.getElementById('developerLine');
 
 // Instructions overlay
@@ -51,6 +52,7 @@ const I18N = {
     following: 'Seguiti*',
     notFollowingBack: 'Non ricambiano*',
     tapHint: 'Il simbolo * indica che i conteggi includono profili disattivati o eliminati (non mostrati da App Instagram).',
+    shareApp: 'Condividi app:',
     developerPage: 'Pagina sviluppatore:',
     instructionsIntro: 'Questa app confronta la lista dei follower e dei profili seguiti e restituisce l\'elenco dei profili che non ricambiano il follow. Queste liste si scaricano dall\'app Instagram seguendo questi passaggi:',
     instructionsList: [
@@ -84,6 +86,7 @@ const I18N = {
     following: 'Following*',
     notFollowingBack: 'Not following back*',
     tapHint: 'The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram App).',
+    shareApp: 'Share app:',
     developerPage: 'Developer page:',
     instructionsIntro: 'This app compares your followers and following lists and returns the profiles that do not follow you back. These lists can be downloaded from the Instagram app by following the steps below:',
     instructionsList: [
@@ -132,6 +135,10 @@ function applyTranslations() {
 
   if (instructionsTitle) instructionsTitle.textContent = T.instructions;
   if (closeInstructionsBtn) closeInstructionsBtn.textContent = T.close;
+  
+  if (shareLine) {
+    shareLine.innerHTML = `${T.shareApp} <a href="https://dbosch99.github.io/CuCu-PWA/" target="_blank" rel="noopener noreferrer">https://dbosch99.github.io/CuCu-PWA/</a>`;
+  }
 
   if (developerLine) {
     developerLine.innerHTML = `${T.developerPage} <a href="https://github.com/dbosch99" target="_blank" rel="noopener noreferrer">https://github.com/dbosch99</a>`;
@@ -256,6 +263,9 @@ processBtn.addEventListener('click', async () => {
       // dedup finale di sicurezza
       followers = [...new Set(followers)];
       following = [...new Set(following)];
+
+      // esclude i profili eliminati riconoscibili tipo "__deleted__..."
+      following = following.filter(u => !isDeletedPlaceholder(u));
 
       visibleFollowingCount = following.length;
 
@@ -475,6 +485,10 @@ function usernameFromHref(href) {
 function normalizeUsername(s) {
   if (!s) return '';
   return s.replace(/^@+/, '').trim().toLowerCase();
+}
+
+function isDeletedPlaceholder(username) {
+  return normalizeUsername(username).startsWith('__deleted__');
 }
 
 function displayResults(notFollowingBack, pending) {
