@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-4-04-2026-3';
+const CACHE = 'cucu-4-04-2026-4';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi dalla root del sito)
@@ -52,7 +52,13 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname.endsWith('/manifest.json') || url.pathname.endsWith('/service-worker.js')) {
+  if (
+    url.pathname.endsWith('/manifest.json') ||
+    url.pathname.endsWith('/service-worker.js') ||
+    url.pathname.endsWith('/styles.css') ||
+    url.pathname.endsWith('/script.js') ||
+    url.pathname.endsWith('/jszip.min.js')
+  ) {
     event.respondWith(networkFirst(req));
     return;
   }
