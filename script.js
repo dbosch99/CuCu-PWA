@@ -104,6 +104,7 @@ const I18N = {
       'Open the CuCu app, tap "Select ZIP", choose the downloaded .ZIP file and press "Run"'
     ],
     instructionsNote: '<strong>Note:</strong><br>• The "Followers" count may be lower than Instagram: Instagram may include deactivated or deleted accounts.<br>• The "Following*" count may be higher: CuCu includes deleted or deactivated profiles that Instagram does not show.<br>• Tap the progressive number to mark a profile in red and exclude it from the count (useful for deleted or deactivated accounts).',
+    alertSelectZip: 'Please select a ZIP first.',
     alertMissingFiles: 'Required files not found in the ZIP.',
     alertProcessingError: 'An error occurred while processing the ZIP.',
     alertNoResults: 'No results to display.'
