@@ -393,7 +393,8 @@ h1{
 #appVersion{
   font-size: 11px;
   color: var(--muted);
-  margin-top: 32px;
+  margin-top: 40px;
+  margin-bottom: -20px;
   text-align: center;
   opacity: 0.8;
 }
