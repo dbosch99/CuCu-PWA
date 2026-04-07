@@ -25,6 +25,7 @@ const instructionsNote = document.getElementById('instructionsNote');
 const shareLine = document.getElementById('shareLine');
 const shareLink = document.getElementById('shareLink');
 const developerLine = document.getElementById('developerLine');
+const appVersion = document.getElementById('appVersion');
 
 // Instructions overlay
 const infoBtn = document.getElementById('infoBtn');
@@ -55,6 +56,7 @@ const I18N = {
     tapHint: 'Il simbolo * indica che i conteggi includono profili disattivati o eliminati (non mostrati da App Instagram).',
     shareApp: 'Condividi app:',
     developerPage: 'Pagina sviluppatore:',
+    versionLabel: 'Versione:',
     instructionsIntro: 'Questa app confronta la lista dei follower e dei profili seguiti e restituisce l\'elenco dei profili che non ricambiano il follow. Queste liste si scaricano dall\'app Instagram seguendo questi passaggi:',
     instructionsList: [
       'Apri Instagram e vai nel tuo profilo',
@@ -89,6 +91,7 @@ const I18N = {
     tapHint: 'The symbol * indicates that counts include deactivated or deleted accounts (not shown by Instagram App).',
     shareApp: 'Share app:',
     developerPage: 'Developer page:',
+    versionLabel: 'Version:',
     instructionsIntro: 'This app compares your followers and following lists and returns the profiles that do not follow you back. These lists can be downloaded from the Instagram app by following the steps below:',
     instructionsList: [
       'Open Instagram and go to your profile',
@@ -197,8 +200,41 @@ function bindShareLink() {
   });
 }
 
+function showAppVersion(version) {
+  if (!appVersion || !version) return;
+
+  appVersion.textContent = `${T.versionLabel} ${version}`;
+
+  const hasResults =
+    totalsRow &&
+    totalsRow.style.display !== 'none' &&
+    resultList &&
+    resultList.children.length > 0;
+
+  appVersion.style.display = hasResults ? 'none' : 'block';
+}
+
+function requestAppVersion() {
+  if (!('serviceWorker' in navigator)) return;
+
+  const receiveVersion = event => {
+    const data = event.data;
+    if (!data || data.type !== 'APP_VERSION' || !data.version) return;
+
+    showAppVersion(data.version);
+    navigator.serviceWorker.removeEventListener('message', receiveVersion);
+  };
+
+  navigator.serviceWorker.addEventListener('message', receiveVersion);
+
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'GET_APP_VERSION' });
+  }
+}
+
 applyTranslations();
 bindShareLink();
+requestAppVersion();
 setTimeout(fitActionButtons, 0);
 
 // --- FILE HANDLING ---
@@ -532,6 +568,8 @@ function isDeletedPlaceholder(username) {
 }
 
 function displayResults(notFollowingBack, pending) {
+  if (appVersion) appVersion.style.display = 'none';
+
   const totalResults = notFollowingBack.length;
     
   if (totalResults === 0 && pending.length === 0) {
