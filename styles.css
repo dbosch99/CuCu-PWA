@@ -388,3 +388,12 @@ h1{
 #resultCount{
   color: orange;
 }
+
+/* Versione app */
+#appVersion{
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+  text-align: center;
+  opacity: 0.8;
+}
