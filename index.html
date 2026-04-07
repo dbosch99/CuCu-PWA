@@ -23,13 +23,13 @@
 
   <!-- Stili e script -->
   <script>
-      const refreshParam = new URLSearchParams(window.location.search).get('_refresh');
-      const assetSuffix = refreshParam ? `?_refresh=${encodeURIComponent(refreshParam)}` : '';
+    const refreshParam = new URLSearchParams(window.location.search).get('_refresh');
+    const assetSuffix = refreshParam ? `?_refresh=${encodeURIComponent(refreshParam)}` : '';
 
-      document.write(`<link rel="stylesheet" href="./styles.css${assetSuffix}">`);
-      document.write(`<script defer src="./jszip.min.js${assetSuffix}"><\/script>`);
-      document.write(`<script defer src="./script.js${assetSuffix}"><\/script>`);
-    </script>
+    document.write(`<link rel="stylesheet" href="./styles.css${assetSuffix}">`);
+    document.write(`<script defer src="./jszip.min.js${assetSuffix}"><\/script>`);
+    document.write(`<script defer src="./script.js${assetSuffix}"><\/script>`);
+  </script>
 </head>
 <body>
   <div class="container">
