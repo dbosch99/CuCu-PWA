@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-7-04-2026-2';
+const CACHE = 'cucu-7-04-2026-3';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi dalla root del sito)
@@ -20,7 +20,7 @@ self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     await cache.addAll(ASSETS);
-// nessuno skipWaiting: aggiornamento solo al riavvio o via CLEAR_CACHE
+    await self.skipWaiting();
   })());
 });
 
