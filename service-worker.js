@@ -1,5 +1,5 @@
 // === CuCu SW: cambia SOLO questa riga per forzare un refresh completo ===
-const CACHE = 'cucu-7-04-2026-1';
+const CACHE = 'cucu-7-04-2026-2';
 // ========================================================================
 
 // Asset principali da mettere in cache (percorsi dalla root del sito)
@@ -86,3 +86,12 @@ async function cacheFirst(req) {
   if (fresh.ok) cache.put(req, fresh.clone());
   return fresh;
 }
+
+self.addEventListener('message', event => {
+  if (!event.data || event.data.type !== 'GET_APP_VERSION') return;
+
+  event.source?.postMessage({
+    type: 'APP_VERSION',
+    version: CACHE
+  });
+});
