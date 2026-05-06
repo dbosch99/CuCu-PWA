@@ -292,7 +292,17 @@ function activateTab(tabName) {
   if (mainTabBtn) mainTabBtn.classList.toggle('tab-button--active', showMain);
   if (deletedTabBtn) deletedTabBtn.classList.toggle('tab-button--active', !showMain);
 
-  if (deletedHint) deletedHint.style.display = showMain ? 'none' : (deletedList && deletedList.children.length > 0 ? 'block' : 'none');
+  if (deletedHint) {
+    deletedHint.style.display = showMain
+      ? 'none'
+      : (deletedList && deletedList.children.length > 0 ? 'block' : 'none');
+  }
+
+  if (showMain) {
+    requestAnimationFrame(() => {
+      fitTotalsLabels();
+    });
+  }
 }
 
 if (mainTabBtn) {
@@ -485,7 +495,6 @@ function resetUI() {
 // --- COMPUTE + RENDER ---
 function recomputeAndRenderAll() {
   const followersSet = new Set(followers.map(u => u.toLowerCase()));
-  const pendingSet = new Set(pending.map(u => u.toLowerCase()));
   const confirmedDeletedSet = new Set([...confirmedDeletedAccounts].map(u => u.toLowerCase()));
 
   const rawNotFollowingBack = following.filter(u => !followersSet.has(u.toLowerCase()));
@@ -500,13 +509,13 @@ function recomputeAndRenderAll() {
   if (totalsRow) totalsRow.style.display = 'block';
   if (tapHint) tapHint.style.display = 'block';
 
-  renderMainList(parsedMainResults, pendingSet);
+  renderMainList(parsedMainResults);
   renderDeletedList();
 
   setTimeout(fitTotalsLabels, 0);
 }
 
-function renderMainList(notFollowingBack, pendingSet) {
+function renderMainList(notFollowingBack) {
   if (appVersion) appVersion.style.display = 'none';
   if (!resultList) return;
 
