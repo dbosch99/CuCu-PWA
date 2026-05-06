@@ -47,34 +47,54 @@
       </h1>
       <p id="tagline">Scopri chi non ti ricambia il follow!</p>
 
-    <div class="button-group">
-      <label for="fileInput" class="button button--gray" id="fileLabel">Seleziona ZIP</label>
-      <input type="file" id="fileInput" accept=".zip" style="display:none;">
-      <button id="processBtn" class="button button--gray-light is-disabled" disabled>Avvia</button>
-      <button id="refreshBtn" class="button button--success" title="Aggiorna">Aggiorna</button>
-    </div>
+      <div class="tabs-bar">
+        <button id="mainTabBtn" class="tab-button tab-button--active" type="button">Risultati</button>
+        <button id="deletedTabBtn" class="tab-button" type="button">Filtro</button>
+      </div>
 
-    <div id="totalsRow">
-      <div class="totals-grid">
-        <div class="total-col">
-          <span class="total-label" id="followersLabel">Follower</span>
-          <span class="total-value" id="followersCount">0</span>
+      <section id="mainTab" class="tab-panel tab-panel--active">
+        <div class="button-group">
+          <label for="fileInput" class="button button--gray" id="fileLabel">Seleziona ZIP</label>
+          <input type="file" id="fileInput" accept=".zip" style="display:none;">
+          <button id="processBtn" class="button button--gray-light is-disabled" disabled>Avvia</button>
+          <button id="refreshBtn" class="button button--success" title="Aggiorna">Aggiorna</button>
         </div>
+        
+      <div id="totalsRow">
+        <div class="totals-grid">
+          <div class="total-col">
+            <span class="total-label" id="followersLabel">Follower</span>
+            <span class="total-value" id="followersCount">0</span>
+          </div>
 
-        <div class="total-col">
-          <span class="total-label" id="followingLabel">Seguiti*</span>
-          <span class="total-value" id="followingCount">0</span>
-        </div>
+          <div class="total-col">
+            <span class="total-label" id="followingLabel">Seguiti</span>
+            <span class="total-value" id="followingCount">0</span>
+          </div>
 
-        <div class="total-col">
-          <span class="total-label" id="notFollowBackLabel">Non ricambiano*</span>
-          <span class="total-value" id="resultCount">0</span>
+          <div class="total-col">
+            <span class="total-label" id="notFollowBackLabel">Non ricambiano</span>
+            <span class="total-value" id="resultCount">0</span>
+          </div>
         </div>
       </div>
-    </div>
-    <p id="tapHint" style="display:none;"></p>
-    <ul id="resultList"></ul>
-    <p id="appVersion" style="display:none;"></p>
+
+      <p id="tapHint" style="display:none;"></p>
+      <ul id="resultList"></ul>
+      <p id="appVersion" style="display:none;"></p>
+    </section>
+
+    <section id="deletedTab" class="tab-panel" style="display:none;">
+        <div class="button-group deleted-actions">
+          <button id="applyDeletedBtn" class="button button--orange" type="button">Salva filtro</button>
+          <button id="exportDeletedBtn" class="button button--orange" type="button">Esporta filtro</button>
+          <label for="importDeletedInput" id="importDeletedLabel" class="button button--gray">Seleziona filtro</label>
+          <input type="file" id="importDeletedInput" accept=".json" style="display:none;">
+        </div>
+
+      <p id="deletedHint" style="display:none;"></p>
+      <ul id="deletedList"></ul>
+    </section>
   </div>
   
   <!-- Instructions Overlay -->
