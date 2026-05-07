@@ -12,6 +12,7 @@
   --primary: #007bff;
   --danger:  #ff4d4d;
   --success: #28a745;
+  --orange:  #ff9500;
   --gray:    #888;
   --gray-lt: #aaa;
 
@@ -44,8 +45,8 @@ body{
   padding: 10px;
   line-height: 1.4;
   touch-action: pan-x pan-y;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;                   /* ← permette di scorrere a dx/sx */
+  -webkit-overflow-scrolling: touch;  /* ← scorrimento fluido su iOS */
 }
 
 /* Layout */
@@ -143,6 +144,7 @@ ul li{
 .button--primary{ background: var(--primary); }
 .button--danger{  background: var(--danger); }
 .button--success{ background: var(--success); }
+.button--orange{  background: var(--orange); }
 .button--gray{    background: var(--gray); }
 .button--gray-light{ background: var(--gray-lt); }
 
@@ -168,6 +170,10 @@ label.button[aria-disabled="true"]{
   gap: 10px;
   margin: 10px 0;
   flex-wrap: nowrap;
+}
+
+.deleted-actions{
+  flex-wrap: wrap;
 }
 
 .button-group > .button,
@@ -199,6 +205,14 @@ ul li.is-inactive{
 }
 ul li.is-inactive a{
   color: inherit; /* i link ereditano il bianco */
+}
+
+ul li.is-restored{
+  background: #66bb6a;
+  color: #fff;
+}
+ul li.is-restored a{
+  color: inherit;
 }
 
 /* ===========================
@@ -278,6 +292,117 @@ h1{
   .info-button:hover{
     filter: brightness(1.05);
   }
+}
+
+/* ===========================
+   TABS
+   =========================== */
+
+.tabs-bar{
+  display: flex;
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid rgba(0,0,0,0.35);
+}
+
+@media (prefers-color-scheme: dark){
+  .tabs-bar{
+    border-bottom-color: rgba(255,255,255,0.18);
+  }
+}
+
+.tab-button{
+  appearance: none;
+  flex: 1 1 50%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.1;
+  cursor: pointer;
+  background: #d7d7d7;
+  color: #1f1f1f;
+  transition: filter 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+
+@media (prefers-color-scheme: dark){
+  .tab-button{
+    background: #2a2f38;
+    color: #d9d9d9;
+  }
+}
+
+.tab-button:first-child{
+  border-top-left-radius: 24px;
+}
+
+.tab-button:last-child{
+  border-top-right-radius: 24px;
+}
+
+.tab-button + .tab-button{
+  border-left: 2px solid rgba(0,0,0,0.28);
+}
+
+@media (prefers-color-scheme: dark){
+  .tab-button + .tab-button{
+    border-left-color: rgba(255,255,255,0.14);
+  }
+}
+
+.tab-button:hover{
+  filter: brightness(0.98);
+}
+
+.tab-button:active{
+  filter: brightness(0.95);
+}
+
+.tab-button:focus-visible{
+  outline: var(--focus);
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.tab-button--active{
+  background: #9f9f9f;
+  color: #111;
+}
+
+@media (prefers-color-scheme: dark){
+  .tab-button--active{
+    background: #4a505c;
+    color: #fff;
+  }
+}
+
+.tab-panel{
+  width: 100%;
+}
+
+.tab-panel--active{
+  display: block;
+}
+
+.deleted-actions{
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
+#deletedHint{
+  width: 100%;
+  font-size: clamp(10px, 2.5vw, 13px);
+  color: var(--muted);
+  margin-top: 4px;
+  margin-bottom: 16px;
+  line-height: 1.3;
+  text-align: center;
+  font-style: italic;
+  word-break: break-word;
 }
 
 /* ===========================
@@ -386,7 +511,35 @@ h1{
 }
 
 #resultCount{
-  color: orange;
+  color: var(--orange);
+}
+
+#deletedTotalsRow{
+  display: none;
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+.deleted-total-col{
+  min-width: 0;
+  text-align: center;
+}
+
+.deleted-total-label{
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.deleted-total-value{
+  display: block;
+  margin-top: 4px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--orange);
 }
 
 /* Versione app */
@@ -394,7 +547,18 @@ h1{
   font-size: 11px;
   color: var(--muted);
   margin-top: 40px;
-  margin-bottom: -20px;
+  margin-bottom: 1px;
   text-align: center;
   opacity: 0.8;
+}
+
+@media (max-width: 420px){
+  .tab-button{
+    font-size: 13px;
+    padding: 8px 8px;
+  }
+
+  .deleted-actions{
+    gap: 8px;
+  }
 }
