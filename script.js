@@ -63,6 +63,7 @@ let parsedMainResults = [];
 let confirmedDeletedAccounts = new Set();
 let pendingDeletedSelections = new Set();
 let pendingRestoreSelections = new Set();
+let currentTotalsLabelFontSize = 16;
 
 // --- LOCALE ---
 const langs = navigator.languages || [navigator.language || ''];
@@ -328,7 +329,14 @@ function activateTab(tabName) {
   }
 
     requestAnimationFrame(() => {
-      fitTotalsLabels();
+      if (showMain) {
+        fitTotalsLabels();
+      } else {
+        if (deletedTotalLabel) {
+          deletedTotalLabel.style.fontSize = `${currentTotalsLabelFontSize}px`;
+        }
+      }
+
       fitActionButtons();
     });
 }
@@ -548,10 +556,14 @@ function recomputeAndRenderAll() {
   if (deletedTotalsRow) deletedTotalsRow.style.display = deletedProfilesCount > 0 ? 'block' : 'none';
   if (tapHint) tapHint.style.display = 'block';
 
-  renderMainList(parsedMainResults);
-  renderDeletedList();
+    renderMainList(parsedMainResults);
+    renderDeletedList();
 
-  setTimeout(fitTotalsLabels, 0);
+    if (deletedTotalLabel) {
+      deletedTotalLabel.style.fontSize = `${currentTotalsLabelFontSize}px`;
+    }
+
+    setTimeout(fitTotalsLabels, 0);
 }
 
 function renderMainList(notFollowingBack) {
@@ -961,8 +973,10 @@ function fitTotalsLabels() {
     mainLabels.forEach(el => el.style.fontSize = `${size}px`);
   }
 
+  currentTotalsLabelFontSize = size;
+
   if (deletedTotalLabel) {
-    deletedTotalLabel.style.fontSize = `${size}px`;
+    deletedTotalLabel.style.fontSize = `${currentTotalsLabelFontSize}px`;
   }
 }
 
