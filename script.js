@@ -940,29 +940,29 @@ function fitUsername(el) {
 }
 
 function fitTotalsLabels() {
-  const labels = [
+  const mainLabels = [
     followersLabel,
     followingLabel,
-    notFollowBackLabel,
-    deletedTotalLabel
-  ].filter(el => {
-    if (!el) return false;
-    return el.offsetParent !== null;
-  });
+    notFollowBackLabel
+  ].filter(Boolean);
 
-  if (labels.length === 0) return;
+  if (mainLabels.length === 0) return;
 
   let size = 16;
-  labels.forEach(el => el.style.fontSize = `${size}px`);
+  mainLabels.forEach(el => el.style.fontSize = `${size}px`);
 
-  const fits = () => labels.every(el => {
+  const fits = () => mainLabels.every(el => {
     const parent = el.parentElement;
     return parent && el.scrollWidth <= parent.clientWidth;
   });
 
   while (!fits() && size > 1) {
     size -= 0.5;
-    labels.forEach(el => el.style.fontSize = `${size}px`);
+    mainLabels.forEach(el => el.style.fontSize = `${size}px`);
+  }
+
+  if (deletedTotalLabel) {
+    deletedTotalLabel.style.fontSize = `${size}px`;
   }
 }
 
