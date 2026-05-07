@@ -529,19 +529,33 @@ function resetUI() {
 
 // --- COMPUTE + RENDER ---
 function recomputeAndRenderAll() {
-    if (followers.length === 0 && following.length === 0 && pending.length === 0) {
-      if (totalsRow) totalsRow.style.display = 'none';
-      if (deletedTotalsRow) deletedTotalsRow.style.display = 'none';
-      if (tapHint) tapHint.style.display = 'none';
-      if (deletedHint) deletedHint.style.display = 'none';
-      if (resultCount) resultCount.textContent = '0';
-      if (deletedTotalCount) deletedTotalCount.textContent = '0';
-      return;
-    }
-  const followersSet = new Set(followers.map(u => u.toLowerCase()));
-  const confirmedDeletedSet = new Set([...confirmedDeletedAccounts].map(u => u.toLowerCase()));
+  if (followers.length === 0 && following.length === 0 && pending.length === 0) {
+    if (totalsRow) totalsRow.style.display = 'none';
+    if (deletedTotalsRow) deletedTotalsRow.style.display = 'none';
+    if (tapHint) tapHint.style.display = 'none';
+    if (deletedHint) deletedHint.style.display = 'none';
+    if (resultCount) resultCount.textContent = '0';
+    if (deletedTotalCount) deletedTotalCount.textContent = '0';
+    return;
+  }
 
+  const followersSet = new Set(followers.map(u => u.toLowerCase()));
   const rawNotFollowingBack = following.filter(u => !followersSet.has(u.toLowerCase()));
+  const rawNotFollowingBackSet = new Set(rawNotFollowingBack.map(u => u.toLowerCase()));
+
+  confirmedDeletedAccounts = new Set(
+    [...confirmedDeletedAccounts].filter(u => rawNotFollowingBackSet.has(u.toLowerCase()))
+  );
+
+  pendingDeletedSelections = new Set(
+    [...pendingDeletedSelections].filter(u => rawNotFollowingBackSet.has(u.toLowerCase()))
+  );
+
+  pendingRestoreSelections = new Set(
+    [...pendingRestoreSelections].filter(u => rawNotFollowingBackSet.has(u.toLowerCase()))
+  );
+
+  const confirmedDeletedSet = new Set([...confirmedDeletedAccounts].map(u => u.toLowerCase()));
   parsedMainResults = rawNotFollowingBack.filter(u => !confirmedDeletedSet.has(u.toLowerCase()));
 
   const visibleFollowing = Math.max(0, following.length - confirmedDeletedAccounts.size);
@@ -556,14 +570,14 @@ function recomputeAndRenderAll() {
   if (deletedTotalsRow) deletedTotalsRow.style.display = deletedProfilesCount > 0 ? 'block' : 'none';
   if (tapHint) tapHint.style.display = 'block';
 
-    renderMainList(parsedMainResults);
-    renderDeletedList();
+  renderMainList(parsedMainResults);
+  renderDeletedList();
 
-    if (deletedTotalLabel) {
-      deletedTotalLabel.style.fontSize = `${currentTotalsLabelFontSize}px`;
-    }
+  if (deletedTotalLabel) {
+    deletedTotalLabel.style.fontSize = `${currentTotalsLabelFontSize}px`;
+  }
 
-    setTimeout(fitTotalsLabels, 0);
+  setTimeout(fitTotalsLabels, 0);
 }
 
 function renderMainList(notFollowingBack) {
