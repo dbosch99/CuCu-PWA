@@ -88,6 +88,7 @@ const I18N = {
     deletedTab: 'Filtro',
     exportDeleted: 'Esporta',
     importDeleted: 'Seleziona filtro',
+    filterSelected: 'Filtro selezionato',
     shareApp: 'Condividi app:',
     developerPage: 'Pagina sviluppatore:',
     versionLabel: 'Versione:',
@@ -134,6 +135,7 @@ const I18N = {
     deletedTab: 'Filter',
     exportDeleted: 'Export',
     importDeleted: 'Select filter',
+    filterSelected: 'Filter selected',
     shareApp: 'Share app:',
     developerPage: 'Developer page:',
     versionLabel: 'Version:',
@@ -492,6 +494,15 @@ function resetUI() {
   fileLabel.textContent = T.selectZip;
   fileLabel.className = 'button button--gray';
   fileLabel.removeAttribute('aria-disabled');
+    
+    if (importDeletedLabel) {
+      importDeletedLabel.textContent = T.importDeleted;
+      importDeletedLabel.className = 'button button--gray';
+      importDeletedLabel.removeAttribute('aria-disabled');
+    }
+    if (importDeletedInput) {
+      importDeletedInput.value = '';
+    }
 
   if (totalsRow) totalsRow.style.display = 'none';
   if (deletedTotalsRow) deletedTotalsRow.style.display = 'none';
@@ -749,12 +760,18 @@ async function importDeletedAccounts(event) {
       return;
     }
 
-    confirmedDeletedAccounts = new Set(normalized);
-    pendingDeletedSelections.clear();
-    pendingRestoreSelections.clear();
+      confirmedDeletedAccounts = new Set(normalized);
+      pendingDeletedSelections.clear();
+      pendingRestoreSelections.clear();
 
-    recomputeAndRenderAll();
-    alert(T.importSuccess);
+      if (importDeletedLabel) {
+        importDeletedLabel.textContent = T.filterSelected;
+        importDeletedLabel.className = 'button button--gray is-disabled';
+        importDeletedLabel.setAttribute('aria-disabled', 'true');
+      }
+
+      recomputeAndRenderAll();
+      setTimeout(fitActionButtons, 0);
   } catch {
     alert(T.importInvalid);
   } finally {
