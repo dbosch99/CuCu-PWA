@@ -328,9 +328,7 @@ function activateTab(tabName) {
   }
 
     requestAnimationFrame(() => {
-      if (showMain) {
-        fitTotalsLabels();
-      }
+      fitTotalsLabels();
       fitActionButtons();
     });
 }
@@ -942,7 +940,16 @@ function fitUsername(el) {
 }
 
 function fitTotalsLabels() {
-  const labels = [followersLabel, followingLabel, notFollowBackLabel].filter(Boolean);
+  const labels = [
+    followersLabel,
+    followingLabel,
+    notFollowBackLabel,
+    deletedTotalLabel
+  ].filter(el => {
+    if (!el) return false;
+    return el.offsetParent !== null;
+  });
+
   if (labels.length === 0) return;
 
   let size = 16;
