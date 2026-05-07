@@ -8,7 +8,7 @@ const resultCount = document.getElementById('resultCount');
 const resultList = document.getElementById('resultList');
 const deletedList = document.getElementById('deletedList');
 
-const actionButtons = [fileLabel, processBtn, refreshBtn];
+let actionButtons = [];
 
 const followersCount = document.getElementById('followersCount');
 const followingCount = document.getElementById('followingCount');
@@ -23,11 +23,21 @@ const deletedTabBtn = document.getElementById('deletedTabBtn');
 const mainTab = document.getElementById('mainTab');
 const deletedTab = document.getElementById('deletedTab');
 
-const applyDeletedBtn = document.getElementById('applyDeletedBtn');
 const exportDeletedBtn = document.getElementById('exportDeletedBtn');
 const importDeletedInput = document.getElementById('importDeletedInput');
 const importDeletedLabel = document.getElementById('importDeletedLabel');
 const deletedHint = document.getElementById('deletedHint');
+const deletedTotalsRow = document.getElementById('deletedTotalsRow');
+const deletedTotalLabel = document.getElementById('deletedTotalLabel');
+const deletedTotalCount = document.getElementById('deletedTotalCount');
+
+actionButtons = [
+  fileLabel,
+  processBtn,
+  refreshBtn,
+  exportDeletedBtn,
+  importDeletedLabel
+];
 
 const tagline = document.getElementById('tagline');
 const tapHint = document.getElementById('tapHint');
@@ -71,11 +81,11 @@ const I18N = {
     followers: 'Follower',
     following: 'Seguiti',
     notFollowingBack: 'Non ricambiano',
+    deletedTotalLabel: 'Eliminati o disattivati',
     tapHint: 'Tocca il numero progressivo per segnare in rosso i profili eliminati da rimuovere dalla scheda principale.',
     deletedHint: 'Tocca il numero progressivo per segnare in verde i profili che vuoi ripristinare nella scheda principale.',
     resultsTab: 'Risultati',
     deletedTab: 'Filtro',
-    applyDeleted: 'Salva',
     exportDeleted: 'Esporta',
     importDeleted: 'Seleziona filtro',
     shareApp: 'Condividi app:',
@@ -100,7 +110,7 @@ const I18N = {
       'Scarica il file. Di default è un file .ZIP. Se il browser lo decomprime automaticamente, comprimilo manualmente in formato .ZIP',
       'Apri l\'app CuCu, seleziona "Seleziona ZIP", scegli il file .ZIP e premi "Avvia"'
     ],
-    instructionsNote: '<strong>Nota:</strong><br>• Il numero di "Follower" può risultare inferiore rispetto a quello mostrato da Instagram: Instagram include talvolta anche account disattivati o eliminati.<br>• Il numero di "Seguiti" può risultare maggiore: CuCu include anche profili eliminati o disattivati, che Instagram non mostra.<br>• Nella scheda "Risultati", tocca il numero progressivo per segnare in rosso i profili eliminati da rimuovere dalla scheda principale.<br>• Nella scheda "Filtro", tocca il numero progressivo per segnare in verde i profili che vuoi ripristinare, poi premi "Salva filtro".',
+    instructionsNote: '<strong>Nota:</strong><br>• Il numero di "Follower" può risultare inferiore rispetto a quello mostrato da Instagram: Instagram include talvolta anche account disattivati o eliminati.<br>• Il numero di "Seguiti" può risultare maggiore: CuCu include anche profili eliminati o disattivati, che Instagram non mostra.<br>• Nella scheda "Risultati", tocca il numero progressivo per segnare in rosso i profili eliminati da rimuovere dalla scheda principale.<br>• Nella scheda "Filtro", tocca il numero progressivo per segnare in verde i profili che vuoi ripristinare. Le modifiche vengono applicate automaticamente quando tocchi una delle due schede.',
     alertSelectZip: 'Seleziona prima un file ZIP.',
     alertMissingFiles: 'File richiesti non trovati nello ZIP.',
     alertProcessingError: 'Si è verificato un errore durante l\'elaborazione del file ZIP.',
@@ -117,11 +127,11 @@ const I18N = {
     followers: 'Followers',
     following: 'Following',
     notFollowingBack: 'Not following back',
+    deletedTotalLabel: 'Deleted or deactivated',
     tapHint: 'Tap the progressive number to mark in red the deleted profiles to remove from the main tab.',
     deletedHint: 'Tap the progressive number to mark in green the profiles you want to restore to the main tab.',
     resultsTab: 'Results',
     deletedTab: 'Filter',
-    applyDeleted: 'Save',
     exportDeleted: 'Export',
     importDeleted: 'Select filter',
     shareApp: 'Share app:',
@@ -146,7 +156,7 @@ const I18N = {
       'Download the file. By default it is a .ZIP file. If your browser extracts it automatically, compress it again manually into .ZIP format',
       'Open the CuCu app, tap "Select ZIP", choose the downloaded .ZIP file and press "Run"'
     ],
-    instructionsNote: '<strong>Note:</strong><br>• The "Followers" count may be lower than Instagram: Instagram may include deactivated or deleted accounts.<br>• The "Following" count may be higher: CuCu includes deleted or deactivated profiles that Instagram does not show.<br>• In the "Results" tab, tap the progressive number to mark in red the deleted profiles to remove from the main tab.<br>• In the "Filter" tab, tap the progressive number to mark in green the profiles you want to restore, then press "Save filter".',
+    instructionsNote: '<strong>Note:</strong><br>• The "Followers" count may be lower than Instagram: Instagram may include deactivated or deleted accounts.<br>• The "Following" count may be higher: CuCu includes deleted or deactivated profiles that Instagram does not show.<br>• In the "Results" tab, tap the progressive number to mark in red the deleted profiles to remove from the main tab.<br>• In the "Filter" tab, tap the progressive number to mark in green the profiles you want to restore. Changes are applied automatically when you tap either tab.',
     alertSelectZip: 'Please select a ZIP first.',
     alertMissingFiles: 'Required files not found in the ZIP.',
     alertProcessingError: 'An error occurred while processing the ZIP.',
@@ -171,6 +181,7 @@ function applyTranslations() {
   if (followersLabel) followersLabel.textContent = T.followers;
   if (followingLabel) followingLabel.textContent = T.following;
   if (notFollowBackLabel) notFollowBackLabel.textContent = T.notFollowingBack;
+  if (deletedTotalLabel) deletedTotalLabel.textContent = T.deletedTotalLabel;
 
   if (tapHint) tapHint.innerHTML = T.tapHint;
   if (deletedHint) deletedHint.innerHTML = T.deletedHint;
@@ -178,7 +189,6 @@ function applyTranslations() {
   if (mainTabBtn) mainTabBtn.textContent = T.resultsTab;
   if (deletedTabBtn) deletedTabBtn.textContent = T.deletedTab;
 
-  if (applyDeletedBtn) applyDeletedBtn.textContent = T.applyDeleted;
   if (exportDeletedBtn) exportDeletedBtn.textContent = T.exportDeleted;
   if (importDeletedLabel) importDeletedLabel.textContent = T.importDeleted;
 
@@ -283,7 +293,24 @@ function requestAppVersion() {
 }
 
 // --- TABS ---
+function applyPendingFilterChanges() {
+  pendingDeletedSelections.forEach(u => confirmedDeletedAccounts.add(u));
+  pendingRestoreSelections.forEach(u => confirmedDeletedAccounts.delete(u));
+
+  pendingDeletedSelections.clear();
+  pendingRestoreSelections.clear();
+
+  recomputeAndRenderAll();
+}
+
 function activateTab(tabName) {
+    if (
+      pendingDeletedSelections.size > 0 ||
+      pendingRestoreSelections.size > 0
+    ) {
+      applyPendingFilterChanges();
+    }
+
   const showMain = tabName === 'main';
 
   if (mainTab) mainTab.style.display = showMain ? 'block' : 'none';
@@ -298,11 +325,12 @@ function activateTab(tabName) {
       : (deletedList && deletedList.children.length > 0 ? 'block' : 'none');
   }
 
-  if (showMain) {
     requestAnimationFrame(() => {
-      fitTotalsLabels();
+      if (showMain) {
+        fitTotalsLabels();
+      }
+      fitActionButtons();
     });
-  }
 }
 
 if (mainTabBtn) {
@@ -425,18 +453,6 @@ processBtn.addEventListener('click', async () => {
 });
 
 // --- DELETED ACCOUNTS ACTIONS ---
-if (applyDeletedBtn) {
-  applyDeletedBtn.addEventListener('click', () => {
-    pendingDeletedSelections.forEach(u => confirmedDeletedAccounts.add(u));
-    pendingRestoreSelections.forEach(u => confirmedDeletedAccounts.delete(u));
-
-    pendingDeletedSelections.clear();
-    pendingRestoreSelections.clear();
-
-    recomputeAndRenderAll();
-  });
-}
-
 if (exportDeletedBtn) {
   exportDeletedBtn.addEventListener('click', exportDeletedAccounts);
 }
@@ -478,9 +494,11 @@ function resetUI() {
   fileLabel.removeAttribute('aria-disabled');
 
   if (totalsRow) totalsRow.style.display = 'none';
+  if (deletedTotalsRow) deletedTotalsRow.style.display = 'none';
   if (followersCount) followersCount.textContent = '0';
   if (followingCount) followingCount.textContent = '0';
   if (resultCount) resultCount.textContent = '0';
+  if (deletedTotalCount) deletedTotalCount.textContent = '0';
 
   if (tapHint) tapHint.style.display = 'none';
   if (deletedHint) deletedHint.style.display = 'none';
@@ -494,6 +512,15 @@ function resetUI() {
 
 // --- COMPUTE + RENDER ---
 function recomputeAndRenderAll() {
+    if (followers.length === 0 && following.length === 0 && pending.length === 0) {
+      if (totalsRow) totalsRow.style.display = 'none';
+      if (deletedTotalsRow) deletedTotalsRow.style.display = 'none';
+      if (tapHint) tapHint.style.display = 'none';
+      if (deletedHint) deletedHint.style.display = 'none';
+      if (resultCount) resultCount.textContent = '0';
+      if (deletedTotalCount) deletedTotalCount.textContent = '0';
+      return;
+    }
   const followersSet = new Set(followers.map(u => u.toLowerCase()));
   const confirmedDeletedSet = new Set([...confirmedDeletedAccounts].map(u => u.toLowerCase()));
 
@@ -501,12 +528,15 @@ function recomputeAndRenderAll() {
   parsedMainResults = rawNotFollowingBack.filter(u => !confirmedDeletedSet.has(u.toLowerCase()));
 
   const visibleFollowing = Math.max(0, following.length - confirmedDeletedAccounts.size);
+  const deletedProfilesCount = confirmedDeletedAccounts.size + pendingDeletedSelections.size;
 
   if (followersCount) followersCount.textContent = followers.length;
   if (followingCount) followingCount.textContent = visibleFollowing;
   if (resultCount) resultCount.textContent = parsedMainResults.length;
+  if (deletedTotalCount) deletedTotalCount.textContent = deletedProfilesCount;
 
   if (totalsRow) totalsRow.style.display = 'block';
+  if (deletedTotalsRow) deletedTotalsRow.style.display = deletedProfilesCount > 0 ? 'block' : 'none';
   if (tapHint) tapHint.style.display = 'block';
 
   renderMainList(parsedMainResults);
@@ -913,7 +943,11 @@ function fitTotalsLabels() {
 }
 
 function fitActionButtons() {
-  const buttons = actionButtons.filter(Boolean);
+  const buttons = actionButtons.filter(el => {
+    if (!el) return false;
+    return el.offsetParent !== null;
+  });
+
   if (buttons.length === 0) return;
 
   let size = 14;
@@ -960,11 +994,15 @@ if (infoBtn && instructionsOverlay && closeInstructionsBtn) {
 applyTranslations();
 bindShareLink();
 requestAppVersion();
-activateTab('main');
-setTimeout(fitActionButtons, 0);
 
-console.log('NEW CuCu script loaded');
-console.log('mainTabBtn =', mainTabBtn);
-console.log('deletedTabBtn =', deletedTabBtn);
-console.log('resultList =', resultList);
-console.log('deletedList =', deletedList);
+if (mainTab) mainTab.style.display = 'block';
+if (deletedTab) deletedTab.style.display = 'none';
+if (mainTabBtn) mainTabBtn.classList.add('tab-button--active');
+if (deletedTabBtn) deletedTabBtn.classList.remove('tab-button--active');
+
+if (totalsRow) totalsRow.style.display = 'none';
+if (deletedTotalsRow) deletedTotalsRow.style.display = 'none';
+if (tapHint) tapHint.style.display = 'none';
+if (deletedHint) deletedHint.style.display = 'none';
+
+setTimeout(fitActionButtons, 0);
