@@ -12,6 +12,7 @@
   --primary: #007bff;
   --danger:  #ff4d4d;
   --success: #28a745;
+  --orange:  #ff9500;
   --gray:    #888;
   --gray-lt: #aaa;
 
@@ -143,7 +144,7 @@ ul li{
 .button--primary{ background: var(--primary); }
 .button--danger{  background: var(--danger); }
 .button--success{ background: var(--success); }
-.button--orange{  background: #ff9500; }
+.button--orange{  background: var(--orange); }
 .button--gray{    background: var(--gray); }
 .button--gray-light{ background: var(--gray-lt); }
 
@@ -510,7 +511,35 @@ h1{
 }
 
 #resultCount{
-  color: orange;
+  color: var(--orange);
+}
+
+#deletedTotalsRow{
+  display: none;
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+.deleted-total-col{
+  min-width: 0;
+  text-align: center;
+}
+
+.deleted-total-label{
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.deleted-total-value{
+  display: block;
+  margin-top: 4px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--orange);
 }
 
 /* Versione app */
