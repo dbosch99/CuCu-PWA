@@ -516,8 +516,8 @@ h1{
 
 #deletedTotalsRow{
   display: none;
-  margin-top: 4px;
-  margin-bottom: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .deleted-total-col{
