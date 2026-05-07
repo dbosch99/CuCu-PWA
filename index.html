@@ -60,7 +60,7 @@
           <button id="refreshBtn" class="button button--success" title="Aggiorna">Aggiorna</button>
         </div>
         
-      <div id="totalsRow">
+        <div id="totalsRow" style="display:none;">
         <div class="totals-grid">
           <div class="total-col">
             <span class="total-label" id="followersLabel">Follower</span>
@@ -84,17 +84,23 @@
       <p id="appVersion" style="display:none;"></p>
     </section>
 
-    <section id="deletedTab" class="tab-panel" style="display:none;">
+      <section id="deletedTab" class="tab-panel" style="display:none;">
         <div class="button-group deleted-actions">
           <label for="importDeletedInput" id="importDeletedLabel" class="button button--gray">Seleziona filtro</label>
           <input type="file" id="importDeletedInput" accept=".json" style="display:none;">
-          <button id="applyDeletedBtn" class="button button--orange" type="button">Salva</button>
           <button id="exportDeletedBtn" class="button button--orange" type="button">Esporta</button>
         </div>
 
-      <p id="deletedHint" style="display:none;"></p>
-      <ul id="deletedList"></ul>
-    </section>
+        <div id="deletedTotalsRow" style="display:none;">
+          <div class="deleted-total-col">
+            <span class="deleted-total-label" id="deletedTotalLabel">Eliminati o disattivati</span>
+            <span class="deleted-total-value" id="deletedTotalCount">0</span>
+          </div>
+        </div>
+
+        <p id="deletedHint" style="display:none;"></p>
+        <ul id="deletedList"></ul>
+      </section>
   </div>
   
   <!-- Instructions Overlay -->
