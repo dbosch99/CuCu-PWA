@@ -48,6 +48,8 @@ const instructionsNote = document.getElementById('instructionsNote');
 const shareLine = document.getElementById('shareLine');
 const developerLine = document.getElementById('developerLine');
 const appVersion = document.getElementById('appVersion');
+const themeToggleWrapper = document.getElementById('themeToggleWrapper');
+const themeToggle = document.getElementById('themeToggle');
 
 // Instructions overlay
 const infoBtn = document.getElementById('infoBtn');
@@ -168,6 +170,37 @@ const I18N = {
 };
 
 const T = I18N[locale];
+
+// --- THEME ---
+function setupThemeToggle() {
+  if (!themeToggleWrapper || !themeToggle) return;
+
+  const isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+  if (isStandalone) {
+    themeToggleWrapper.classList.add('is-hidden');
+    return;
+  }
+
+  const savedTheme = localStorage.getItem('cucu-theme');
+
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+    themeToggle.textContent = 'Light mode';
+  } else {
+    themeToggle.textContent = 'Dark mode';
+  }
+
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('cucu-theme', isDark ? 'dark' : 'light');
+    themeToggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+  });
+}
 
 // --- TRANSLATIONS ---
 function applyTranslations() {
@@ -1043,6 +1076,7 @@ if (infoBtn && instructionsOverlay && closeInstructionsBtn) {
 }
 
 // --- INIT ---
+setupThemeToggle();
 applyTranslations();
 bindShareLink();
 requestAppVersion();
