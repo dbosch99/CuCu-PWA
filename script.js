@@ -179,10 +179,18 @@ function setupThemeToggle() {
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true;
 
-  if (isStandalone) {
-    themeToggleWrapper.classList.add('is-hidden');
-    return;
-  }
+    if (isStandalone) {
+      themeToggleWrapper.classList.add('is-hidden');
+
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.body.classList.toggle('dark', prefersDark);
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        document.body.classList.toggle('dark', event.matches);
+      });
+
+      return;
+    }
 
   const savedTheme = localStorage.getItem('cucu-theme');
 
