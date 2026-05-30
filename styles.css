@@ -24,14 +24,12 @@
   --focus: 2px solid #111; /* visibile su chiaro e scuro */
 }
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg: #0f1115;
-    --text: #eaeaea;
-    --muted: #a0a0a0;
-    --card: #161a20;
-    --shadow: 0 2px 6px rgba(0,0,0,0.5);
-  }
+body.dark{
+  --bg: #000000;
+  --text: #eaeaea;
+  --muted: #a0a0a0;
+  --card: #161a20;
+  --shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 
 html, body { height: 100%; }
@@ -47,6 +45,35 @@ body{
   touch-action: pan-x pan-y;
   overflow-x: auto;                   /* ← permette di scorrere a dx/sx */
   -webkit-overflow-scrolling: touch;  /* ← scorrimento fluido su iOS */
+}
+
+.theme-toggle{
+  width: 100%;
+  max-width: 800px;
+  min-width: 335px;
+  margin: 0 auto 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.theme-toggle.is-hidden{
+  display: none;
+}
+
+.theme-toggle button{
+  border: 1px solid rgba(0,0,0,0.15);
+  background: var(--card);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+body.dark .theme-toggle button{
+  border-color: rgba(255,255,255,0.18);
 }
 
 /* Layout */
@@ -77,8 +104,8 @@ ul li{
   justify-content: space-between;
   align-items: center;
 }
-@media (prefers-color-scheme: dark){
-  ul li{ background: #1f2530; }
+body.dark ul li{
+  background: #1f2530;
 }
 .user-content{
   flex: 1;
@@ -195,8 +222,8 @@ ul li span.index{
   border-radius: 12px;
   background: rgba(0,0,0,0.08);
 }
-@media (prefers-color-scheme: dark){
-  ul li span.index{ background: rgba(255,255,255,0.12); }
+body.dark ul li span.index{
+  background: rgba(255,255,255,0.12);
 }
 
 /* Riga marcata come inattiva (dopo il click sul numero) */
@@ -289,12 +316,6 @@ h1{
   filter: brightness(1.05);
 }
 
-@media (prefers-color-scheme: dark){
-  .info-button:hover{
-    filter: brightness(1.05);
-  }
-}
-
 /* ===========================
    TABS
    =========================== */
@@ -307,10 +328,8 @@ h1{
   border-bottom: 2px solid rgba(0,0,0,0.35);
 }
 
-@media (prefers-color-scheme: dark){
-  .tabs-bar{
-    border-bottom-color: rgba(255,255,255,0.18);
-  }
+body.dark .tabs-bar{
+  border-bottom-color: rgba(255,255,255,0.18);
 }
 
 .tab-button{
@@ -329,11 +348,9 @@ h1{
   transition: filter 120ms ease, background-color 120ms ease, color 120ms ease;
 }
 
-@media (prefers-color-scheme: dark){
-  .tab-button{
-    background: #2a2f38;
-    color: #d9d9d9;
-  }
+body.dark .tab-button{
+  background: #2a2f38;
+  color: #d9d9d9;
 }
 
 .tab-button:first-child{
@@ -348,10 +365,8 @@ h1{
   border-left: 2px solid rgba(0,0,0,0.28);
 }
 
-@media (prefers-color-scheme: dark){
-  .tab-button + .tab-button{
-    border-left-color: rgba(255,255,255,0.14);
-  }
+body.dark .tab-button + .tab-button{
+  border-left-color: rgba(255,255,255,0.14);
 }
 
 .tab-button:hover{
@@ -374,11 +389,9 @@ h1{
   color: #111;
 }
 
-@media (prefers-color-scheme: dark){
-  .tab-button--active{
-    background: #4a505c;
-    color: #fff;
-  }
+body.dark .tab-button--active{
+  background: #4a505c;
+  color: #fff;
 }
 
 .tab-panel{
@@ -456,10 +469,8 @@ h1{
   border-top: 1px solid rgba(0,0,0,0.15);
 }
 
-@media (prefers-color-scheme: dark){
-  .instructions-content hr{
-    border-top-color: rgba(255,255,255,0.2);
-  }
+body.dark .instructions-content hr{
+  border-top-color: rgba(255,255,255,0.2);
 }
 
 #closeInstructions{
