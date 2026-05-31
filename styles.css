@@ -24,7 +24,7 @@
   --focus: 2px solid #111; /* visibile su chiaro e scuro */
 }
 
-body.dark{
+html.dark{
   --bg: #000000;
   --text: #eaeaea;
   --muted: #a0a0a0;
@@ -72,7 +72,7 @@ body{
   box-shadow: var(--shadow);
 }
 
-body.dark .theme-toggle button{
+html.dark .theme-toggle button{
   border-color: rgba(255,255,255,0.18);
 }
 
@@ -104,7 +104,7 @@ ul li{
   justify-content: space-between;
   align-items: center;
 }
-body.dark ul li{
+html.dark ul li{
   background: #1f2530;
 }
 .user-content{
@@ -222,7 +222,7 @@ ul li span.index{
   border-radius: 12px;
   background: rgba(0,0,0,0.08);
 }
-body.dark ul li span.index{
+html.dark ul li span.index{
   background: rgba(255,255,255,0.12);
 }
 
@@ -328,7 +328,7 @@ h1{
   border-bottom: 2px solid rgba(0,0,0,0.35);
 }
 
-body.dark .tabs-bar{
+html.dark .tabs-bar{
   border-bottom-color: rgba(255,255,255,0.18);
 }
 
@@ -348,7 +348,7 @@ body.dark .tabs-bar{
   transition: filter 120ms ease, background-color 120ms ease, color 120ms ease;
 }
 
-body.dark .tab-button{
+html.dark .tab-button{
   background: #2a2f38;
   color: #d9d9d9;
 }
@@ -365,7 +365,7 @@ body.dark .tab-button{
   border-left: 2px solid rgba(0,0,0,0.28);
 }
 
-body.dark .tab-button + .tab-button{
+html.dark .tab-button + .tab-button{
   border-left-color: rgba(255,255,255,0.14);
 }
 
@@ -389,7 +389,7 @@ body.dark .tab-button + .tab-button{
   color: #111;
 }
 
-body.dark .tab-button--active{
+html.dark .tab-button--active{
   background: #4a505c;
   color: #fff;
 }
@@ -469,7 +469,7 @@ body.dark .tab-button--active{
   border-top: 1px solid rgba(0,0,0,0.15);
 }
 
-body.dark .instructions-content hr{
+html.dark .instructions-content hr{
   border-top-color: rgba(255,255,255,0.2);
 }
 
