@@ -183,10 +183,10 @@ function setupThemeToggle() {
       themeToggleWrapper.classList.add('is-hidden');
 
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.body.classList.toggle('dark', prefersDark);
+      document.documentElement.classList.toggle('dark', prefersDark);
 
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        document.body.classList.toggle('dark', event.matches);
+        document.documentElement.classList.toggle('dark', event.matches);
       });
 
       return;
@@ -195,16 +195,16 @@ function setupThemeToggle() {
   const savedTheme = localStorage.getItem('cucu-theme');
 
   if (savedTheme === 'dark') {
-    document.body.classList.add('dark');
+    document.documentElement.classList.add('dark');
     themeToggle.textContent = 'Light mode';
   } else {
     themeToggle.textContent = 'Dark mode';
   }
 
   themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
+    document.documentElement.classList.toggle('dark');
 
-    const isDark = document.body.classList.contains('dark');
+    const isDark = document.documentElement.classList.contains('dark');
     localStorage.setItem('cucu-theme', isDark ? 'dark' : 'light');
     themeToggle.textContent = isDark ? 'Light mode' : 'Dark mode';
   });
@@ -333,7 +333,14 @@ function requestAppVersion() {
 
   if (navigator.serviceWorker.controller) {
     navigator.serviceWorker.controller.postMessage({ type: 'GET_APP_VERSION' });
+    return;
   }
+
+  navigator.serviceWorker.ready.then(() => {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'GET_APP_VERSION' });
+    }
+  });
 }
 
 // --- TABS ---
