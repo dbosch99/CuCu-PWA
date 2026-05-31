@@ -21,15 +21,34 @@
       <meta property="og:image" content="./CuCu-512.png">
       <link rel="image_src" href="./CuCu-512.png">
 
-  <!-- Stili e script -->
-  <script>
-    const refreshParam = new URLSearchParams(window.location.search).get('_refresh');
-    const assetSuffix = refreshParam ? `?_refresh=${encodeURIComponent(refreshParam)}` : '';
+          <!-- Tema iniziale: evita flash chiaro/scuro -->
+          <script>
+            const isStandaloneEarly =
+              window.matchMedia('(display-mode: standalone)').matches ||
+              window.navigator.standalone === true;
 
-    document.write(`<link rel="stylesheet" href="./styles.css${assetSuffix}">`);
-    document.write(`<script defer src="./jszip.min.js${assetSuffix}"><\/script>`);
-    document.write(`<script defer src="./script.js${assetSuffix}"><\/script>`);
-  </script>
+            const prefersDarkEarly =
+              window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            const savedThemeEarly = localStorage.getItem('cucu-theme');
+
+            if (
+              (isStandaloneEarly && prefersDarkEarly) ||
+              (!isStandaloneEarly && savedThemeEarly === 'dark')
+            ) {
+              document.documentElement.classList.add('dark');
+            }
+          </script>
+
+          <!-- Stili e script -->
+          <script>
+            const refreshParam = new URLSearchParams(window.location.search).get('_refresh');
+            const assetSuffix = refreshParam ? `?_refresh=${encodeURIComponent(refreshParam)}` : '';
+
+            document.write(`<link rel="stylesheet" href="./styles.css${assetSuffix}">`);
+            document.write(`<script defer src="./jszip.min.js${assetSuffix}"><\/script>`);
+            document.write(`<script defer src="./script.js${assetSuffix}"><\/script>`);
+          </script>
 </head>
 <body>
   <div class="theme-toggle" id="themeToggleWrapper">
