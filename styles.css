@@ -227,20 +227,26 @@ html.dark ul li span.index{
 }
 
 /* Riga marcata come inattiva (dopo il click sul numero) */
-ul li.is-inactive{
+ul li.is-inactive,
+html.dark ul li.is-inactive{
   background: #e57373;
   color: #fff;
 }
-ul li.is-inactive a{
-  color: inherit; /* i link ereditano il bianco */
+
+ul li.is-inactive a,
+html.dark ul li.is-inactive a{
+  color: inherit !important; /* i link ereditano il bianco */
 }
 
-ul li.is-restored{
+ul li.is-restored,
+html.dark ul li.is-restored{
   background: #66bb6a;
   color: #fff;
 }
-ul li.is-restored a{
-  color: inherit;
+
+ul li.is-restored a,
+html.dark ul li.is-restored a{
+  color: inherit !important;
 }
 
 /* ===========================
